@@ -83,20 +83,3 @@ function main() {
 
 # 执行主流程
 main "$@"
-  download_newfile_to_tmp "${NEW_FILE_LINK}" "${FILE_LOCAL_NAME}"
-  echo "${NEW_FILE_LINK} is downloaded to ${TMP_DIR}/${FILE_LOCAL_NAME}"
-
-  # checksum
-
-  # 安装文件到固定位置（权限：755包含执行、644不包含执行）
-  install_tmpfile "${FILE_PERMISSION}" "${FILE_LOCAL_NAME}" "$FILE_LOCAL_PATH"
-  echo "${TMP_DIR}/${FILE_LOCAL_NAME} is installed to ${FILE_LOCAL_PATH}"
-
-  # 删除临时文件夹
-  rm -r -f "$TMP_DIR" || exit 1
-  echo "temp file deleted"
-}
-
-
-# 执行主流程
-main "$@"
