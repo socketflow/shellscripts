@@ -9,11 +9,25 @@ set -e
 
 
 # [variable] 定义一些要用到的变量
-FILE_LOCAL_NAME='app'
-FILE_LOCAL_PATH="$HOME/dest_dir"
-FILE_PERMISSION='644'
-NEW_FILE_LINK='github_link'
+if [ "${1}" = "file-1" ]; then
+  FILE_LOCAL_NAME='file-1'
+  FILE_LOCAL_PATH="$HOME/dest_dir_1"
+  FILE_PERMISSION='644'
+  NEW_FILE_LINK='github_link_1'
+elif [ "${1}" = "file-2" ]; then
+  FILE_LOCAL_NAME='file-2'
+  FILE_LOCAL_PATH="$HOME/dest_dir_2"
+  FILE_PERMISSION='644'
+  NEW_FILE_LINK='github_link_2'
+else
+  FILE_LOCAL_NAME='error'
+  FILE_LOCAL_PATH="error"
+  FILE_PERMISSION='error'
+  NEW_FILE_LINK='error'
+fi
 
+echo "FILE_LOCAL_NAME is ${FILE_LOCAL_NAME}"
+echo "FILE_PERMISSION is ${FILE_PERMISSION}"
 
 # 创建一个临时文件夹，如果创建失败则退出
 TMP_DIR=$(mktemp -d) || exit 1
