@@ -61,6 +61,7 @@ function remove_tmpfile() {
     echo ''
     echo ">> ${TMP_DIR} and its contents are removed."
   else
+    echo ''
     echo '>> ERROR: Tmp File Removal Failed! Please check your file or try again.'
     exit 1
   fi
