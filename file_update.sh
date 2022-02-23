@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# [version] 20220223.2
+# [version] 20220223.3
 
 # [title] this is a generic file updater script
 # [title] 这是一个通用性的文件更新脚本
@@ -42,6 +42,19 @@ function download_newfile_to_tmp() {
 #   some code here
 # }
 
+
+function check_install_path() {
+  if [ -d "${FILE_LOCAL_PATH}" ]; then
+    echo ''
+    echo "Direcctory already exists: ${FILE_LOCAL_PATH}"
+  else
+    mkdir -p "${FILE_LOCAL_PATH}"
+    echo ''
+    echo "Direcctory created: ${FILE_LOCAL_PATH}"
+  fi
+}
+
+
 # $1是权限，$2是下载到临时文件的新文件，$3是目标path
 function install_tmpfile() {
   if install -b -m "$1" "${TMP_DIR}/${2}" "${3}"; then
@@ -55,6 +68,7 @@ function install_tmpfile() {
   fi
 }
 
+
 # 清理临时文件，$1是脚本创建的临时文件夹地址
 function remove_tmpfile() {
   if rm -r -f "${TMP_DIR}"; then
@@ -67,12 +81,16 @@ function remove_tmpfile() {
   fi
 }
 
+
 # 定义主流程
 function main() {
   # 先下载文件
   download_newfile_to_tmp "${NEW_FILE_LINK}" "${FILE_LOCAL_NAME}"
 
   # checksum
+
+  # check install path
+  check_install_path
 
   # 安装文件到固定位置（权限：755包含执行、644不包含执行）
   install_tmpfile "${FILE_PERMISSION}" "${FILE_LOCAL_NAME}" "$FILE_LOCAL_PATH"
