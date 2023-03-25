@@ -188,19 +188,6 @@ else
 
 fi
 
-# DETERMINE CURL PROXY
-if [ "$(uname)" = "Darwin" ]; then
-  CURL_PROXY='-x socks5h://127.0.0.1:1099 '
-
-elif [ "$(uname)" = "Linux" ]; then
-  CURL_PROXY=''
-
-else 
-  CURL_PROXY=''
-
-fi
-
-
 
 function echo_job() {
   echo ''
@@ -209,7 +196,6 @@ function echo_job() {
   echo ">> \$FILE_LOCAL_PATH is ${FILE_LOCAL_PATH}"
   echo ">> \$FILE_PERMISSION is ${FILE_PERMISSION}"
   echo ">> \$NEW_FILE_LINK is ${NEW_FILE_LINK}"
-  echo ">> \$CURL_PROXY is ${CURL_PROXY}"
 }
 
 
