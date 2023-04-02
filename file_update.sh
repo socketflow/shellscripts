@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# [version] 20230325
+# [version] 20230402
 
 # [title] this is a generic file updater script
 # [title] 这是一个通用性的文件更新脚本
@@ -10,35 +10,44 @@ set -e
 
 # 1 [variable] 定义一些要用到的变量
 
-# geoip.dat, for xray, for linux, from loyalsoldier, cn only
+# geoip.dat, for xray, for linux, from loyalsoldier | soffchen
+# soffchen的 cn ipv4 源换成了 [chnroutes2](https://github.com/misakaio/chnroutes2)
 if [ "${1}" = "geoip" ] && [ "$(uname)" = "Linux" ]; then
   FILE_LOCAL_NAME='geoip.dat'
   FILE_PERMISSION='644'
   FILE_LOCAL_PATH="/usr/local/share/xray"
-  NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat'
+  # NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat'
+  NEW_FILE_LINK='https://github.com/soffchen/geoip/releases/latest/download/geoip.dat'
 
-# geoip.dat, for xray, for macos, from loyalsoldier, cn only
+# geoip.dat, for xray, for macos, from loyalsoldier | soffchen
+# soffchen的 cn ipv4 源换成了 [chnroutes2](https://github.com/misakaio/chnroutes2)
 elif [ "${1}" = "geoip" ] && [ "$(uname)" = "Darwin" ]; then
   FILE_LOCAL_NAME='geoip.dat'
   FILE_PERMISSION='644'
   FILE_LOCAL_PATH="/usr/local/etc/xray/share"
-  NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat'
+  # NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat'
+  NEW_FILE_LINK='https://github.com/soffchen/geoip/releases/latest/download/geoip.dat'
 
-# geosite.dat, for xray, for linux, from loyalsoldier
+# geosite.dat, for xray, for linux, from loyalsoldier | MetaCubeX
+# MetaCubeX 的 geosite:cn 源换成了 [ChinaMax_Domain](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash/ChinaMax)
 elif [ "${1}" = "geosite" ] && [ "$(uname)" = "Linux" ]; then
   FILE_LOCAL_NAME='geosite.dat'
   FILE_PERMISSION='644'
   FILE_LOCAL_PATH="/usr/local/share/xray"
-  NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat'
+  # NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat'
+  NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat'
 
-# geosite.dat, for xray, for macos, from loyalsoldier
+# geosite.dat, for xray, for macos, from loyalsoldier | MetaCubeX
+# MetaCubeX 的 geosite:cn 源换成了 [ChinaMax_Domain](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash/ChinaMax)
 elif [ "${1}" = "geosite" ] && [ "$(uname)" = "Darwin" ]; then
   FILE_LOCAL_NAME='geosite.dat'
   FILE_PERMISSION='644'
   FILE_LOCAL_PATH="/usr/local/etc/xray/share"
-  NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat'
+  # NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat'
+  NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat'
 
 # geoip.db, for sing-box, for linux, from soffchen
+# soffchen的 cn ipv4 源换成了 [chnroutes2](https://github.com/misakaio/chnroutes2)
 elif [ "${1}" = "geoipdb" ] && [ "$(uname)" = "Linux" ]; then
   FILE_LOCAL_NAME='geoip.db'
   FILE_PERMISSION='644'
@@ -46,25 +55,30 @@ elif [ "${1}" = "geoipdb" ] && [ "$(uname)" = "Linux" ]; then
   NEW_FILE_LINK='https://github.com/soffchen/sing-geoip/releases/latest/download/geoip-cn.db'
 
 # geoip.db, for sing-box, for macos, from soffchen
+# soffchen的 cn ipv4 源换成了 [chnroutes2](https://github.com/misakaio/chnroutes2)
 elif [ "${1}" = "geoipdb" ] && [ "$(uname)" = "Darwin" ]; then
   FILE_LOCAL_NAME='geoip.db'
   FILE_PERMISSION='644'
   FILE_LOCAL_PATH="/usr/local/etc/sing-box/share"
   NEW_FILE_LINK='https://github.com/soffchen/sing-geoip/releases/latest/download/geoip-cn.db'
 
-# geosite.db, for sing-box, for linux, from soffchen
+# geosite.db, for sing-box, for linux, from soffchen | MetaCubeX
+# MetaCubeX 的 geosite:cn 源换成了 [ChinaMax_Domain](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash/ChinaMax)
 elif [ "${1}" = "geositedb" ] && [ "$(uname)" = "Linux" ]; then
   FILE_LOCAL_NAME='geosite.db'
   FILE_PERMISSION='644'
   FILE_LOCAL_PATH="/usr/local/share/sing-box"
-  NEW_FILE_LINK='https://github.com/soffchen/sing-geosite/releases/latest/download/geosite.db'
+  # NEW_FILE_LINK='https://github.com/soffchen/sing-geosite/releases/latest/download/geosite.db'
+  NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.db'
 
-# geosite.db, for sing-box, for macos, from soffchen
+# geosite.db, for sing-box, for macos, from soffchen | MetaCubeX
+# MetaCubeX 的 geosite:cn 源换成了 [ChinaMax_Domain](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash/ChinaMax)
 elif [ "${1}" = "geositedb" ] && [ "$(uname)" = "Darwin" ]; then
   FILE_LOCAL_NAME='geosite.db'
   FILE_PERMISSION='644'
   FILE_LOCAL_PATH="/usr/local/etc/sing-box/share"
-  NEW_FILE_LINK='https://github.com/soffchen/sing-geosite/releases/latest/download/geosite.db'
+  # NEW_FILE_LINK='https://github.com/soffchen/sing-geosite/releases/latest/download/geosite.db'
+  NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.db'
 
 # geoip in mmdb format, for hysteria, for linux, from loyalsoldier
 elif [ "${1}" = "mmdb" ] && [ "$(uname)" = "Linux" ]; then
@@ -188,7 +202,6 @@ else
 
 fi
 
-
 function echo_job() {
   echo ''
   echo ">> \$OS_TYPE is $(uname)"
@@ -197,8 +210,6 @@ function echo_job() {
   echo ">> \$FILE_PERMISSION is ${FILE_PERMISSION}"
   echo ">> \$NEW_FILE_LINK is ${NEW_FILE_LINK}"
 }
-
-
 
 # 创建一个临时文件夹，如果创建失败则退出
 function make_tmpdir() {
