@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# [version] 20230402
+# [version] 20230404
 
 # [title] this is a generic file updater script
 # [title] 这是一个通用性的文件更新脚本
@@ -140,7 +140,6 @@ elif [ "${1}" = "xray-version" ] && [ "$(uname)" = "Darwin" ]; then
 
 # tuic binary, latest release, for linux *SERVER*, x86_64
 elif [ "${1}" = "tuic" ] && [ "$(uname)" = "Linux" ]; then
-  VERSION="${2}"
   FILE_LOCAL_NAME='tuic'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
@@ -150,7 +149,6 @@ elif [ "${1}" = "tuic" ] && [ "$(uname)" = "Linux" ]; then
 
 # tuic binary, latest release, for macos *CLIENT*, arm64 (apple silicon) 
 elif [ "${1}" = "tuic" ] && [ "$(uname)" = "Darwin" ]; then
-  VERSION="${2}"
   FILE_LOCAL_NAME='tuic'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
@@ -160,7 +158,6 @@ elif [ "${1}" = "tuic" ] && [ "$(uname)" = "Darwin" ]; then
 
 # sing-box binary, latest release, linux, amd64
 elif [ "${1}" = "sing-box" ] && [ "$(uname)" = "Linux" ]; then
-  VERSION="${2}"
   FILE_LOCAL_NAME='sing-box.tar.gz'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
@@ -170,7 +167,6 @@ elif [ "${1}" = "sing-box" ] && [ "$(uname)" = "Linux" ]; then
 
 # sing-box binary, latest release, macos, arm64 (apple silicon) 
 elif [ "${1}" = "sing-box" ] && [ "$(uname)" = "Darwin" ]; then
-  VERSION="${2}"
   FILE_LOCAL_NAME='sing-box.tar.gz'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
@@ -193,6 +189,15 @@ elif [ "${1}" = "sing-box-version" ] && [ "$(uname)" = "Darwin" ]; then
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
   NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/download/v${VERSION}/sing-box-${VERSION}-darwin-arm64.tar.gz"
+
+# warp-go binary, latest release, linux, amd64
+elif [ "${1}" = "warp-go" ] && [ "$(uname)" = "Linux" ]; then
+  FILE_LOCAL_NAME='warp-go.tar.gz'
+  FILE_PERMISSION='755'
+  FILE_LOCAL_PATH="/usr/local/bin"
+  VERSION=$(curl -s https://gitlab.com/api/v4/projects/38543271/releases/ | jq '.[]' | jq -r '.name' | head -1)
+  BIN_VERSION=${VERSION:1}
+  NEW_FILE_LINK="https://gitlab.com/ProjectWARP/warp-go/-/releases/${VERSION}/downloads/warp-go_${BIN_VERSION}_linux_amd64.tar.gz"
 
 else
   FILE_LOCAL_NAME='ERROR'
@@ -221,7 +226,7 @@ function make_tmpdir() {
 
 # $1 是新版本的远程下载地址， $2 是本地文件名
 function download_target_to_tmpdir() {
-  if curl ${CURL_PROXY} -L "${1}" -o "${TMP_DIR}/${2}"; then
+  if curl -L "${1}" -o "${TMP_DIR}/${2}"; then
     echo ''
     echo ">> ${1} is downloaded to ${TMP_DIR}/${2}"
   else
@@ -259,6 +264,15 @@ function uncompress_tmpfile() {
     echo ''
     echo ">> tar.gz file extracted"
     FILE_LOCAL_NAME='sing-box'
+    echo ''
+    echo ">> FILE_LOCAL_NAME changed to ${FILE_LOCAL_NAME}"
+  elif [ -f ${TMP_DIR}/warp-go.tar.gz ]; then
+    echo ''
+    echo ">> tar.gz file is found in ${TMP_DIR}"
+    tar -xzf "${TMP_DIR}/warp-go.tar.gz" -C "${TMP_DIR}"
+    echo ''
+    echo ">> tar.gz file extracted"
+    FILE_LOCAL_NAME='warp-go'
     echo ''
     echo ">> FILE_LOCAL_NAME changed to ${FILE_LOCAL_NAME}"
   else
