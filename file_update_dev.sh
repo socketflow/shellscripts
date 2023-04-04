@@ -226,7 +226,7 @@ function make_tmpdir() {
 
 # $1 是新版本的远程下载地址， $2 是本地文件名
 function download_target_to_tmpdir() {
-  if curl ${CURL_PROXY} -L "${1}" -o "${TMP_DIR}/${2}"; then
+  if curl -L "${1}" -o "${TMP_DIR}/${2}"; then
     echo ''
     echo ">> ${1} is downloaded to ${TMP_DIR}/${2}"
   else
@@ -269,7 +269,7 @@ function uncompress_tmpfile() {
   elif [ -f ${TMP_DIR}/warp-go.tar.gz ]; then
     echo ''
     echo ">> tar.gz file is found in ${TMP_DIR}"
-    tar -xzf "${TMP_DIR}/warp-go.tar.gz" --strip-components=1 -C "${TMP_DIR}"
+    tar -xzf "${TMP_DIR}/warp-go.tar.gz" -C "${TMP_DIR}"
     echo ''
     echo ">> tar.gz file extracted"
     FILE_LOCAL_NAME='warp-go'
