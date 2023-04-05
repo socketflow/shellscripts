@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# [version] 20230404
+# [version] 20230406
 
 # [title] this is a generic file updater script
 # [title] 这是一个通用性的文件更新脚本
@@ -12,192 +12,224 @@ set -e
 
 # geoip.dat, for xray, for linux, from loyalsoldier | soffchen
 # soffchen的 cn ipv4 源换成了 [chnroutes2](https://github.com/misakaio/chnroutes2)
-if [ "${1}" = "geoip" ] && [ "$(uname)" = "Linux" ]; then
+if [ "${1}" = "geoip" ]; then
   FILE_LOCAL_NAME='geoip.dat'
   FILE_PERMISSION='644'
-  FILE_LOCAL_PATH="/usr/local/share/xray"
   # NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat'
   NEW_FILE_LINK='https://github.com/soffchen/geoip/releases/latest/download/geoip.dat'
 
-# geoip.dat, for xray, for macos, from loyalsoldier | soffchen
-# soffchen的 cn ipv4 源换成了 [chnroutes2](https://github.com/misakaio/chnroutes2)
-elif [ "${1}" = "geoip" ] && [ "$(uname)" = "Darwin" ]; then
-  FILE_LOCAL_NAME='geoip.dat'
-  FILE_PERMISSION='644'
-  FILE_LOCAL_PATH="/usr/local/etc/xray/share"
-  # NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat'
-  NEW_FILE_LINK='https://github.com/soffchen/geoip/releases/latest/download/geoip.dat'
+  OS_NAME="$(uname)"
+
+  if [ "${OS_NAME}" = "Linux" ]; then
+    FILE_LOCAL_PATH="/usr/local/share/xray"
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    FILE_LOCAL_PATH="/usr/local/etc/xray/share"
+  else
+    FILE_LOCAL_PATH="error due to unknown operating system"
+    exit
+  fi
+
 
 # geosite.dat, for xray, for linux, from loyalsoldier | MetaCubeX
 # MetaCubeX 的 geosite:cn 源换成了 [ChinaMax_Domain](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash/ChinaMax)
-elif [ "${1}" = "geosite" ] && [ "$(uname)" = "Linux" ]; then
+elif [ "${1}" = "geosite" ]; then
   FILE_LOCAL_NAME='geosite.dat'
   FILE_PERMISSION='644'
-  FILE_LOCAL_PATH="/usr/local/share/xray"
   # NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat'
   NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat'
 
-# geosite.dat, for xray, for macos, from loyalsoldier | MetaCubeX
-# MetaCubeX 的 geosite:cn 源换成了 [ChinaMax_Domain](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash/ChinaMax)
-elif [ "${1}" = "geosite" ] && [ "$(uname)" = "Darwin" ]; then
-  FILE_LOCAL_NAME='geosite.dat'
-  FILE_PERMISSION='644'
-  FILE_LOCAL_PATH="/usr/local/etc/xray/share"
-  # NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat'
-  NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat'
+  OS_NAME="$(uname)"
+
+  if [ "${OS_NAME}" = "Linux" ]; then
+    FILE_LOCAL_PATH="/usr/local/share/xray"
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    FILE_LOCAL_PATH="/usr/local/etc/xray/share"
+  else
+    FILE_LOCAL_PATH="error due to unknown operating system"
+    exit
+  fi
+
 
 # geoip.db, for sing-box, for linux, from soffchen
 # soffchen的 cn ipv4 源换成了 [chnroutes2](https://github.com/misakaio/chnroutes2)
-elif [ "${1}" = "geoipdb" ] && [ "$(uname)" = "Linux" ]; then
+elif [ "${1}" = "geoip-db" ]; then
   FILE_LOCAL_NAME='geoip.db'
   FILE_PERMISSION='644'
-  FILE_LOCAL_PATH="/usr/local/share/sing-box"
   NEW_FILE_LINK='https://github.com/soffchen/sing-geoip/releases/latest/download/geoip-cn.db'
 
-# geoip.db, for sing-box, for macos, from soffchen
-# soffchen的 cn ipv4 源换成了 [chnroutes2](https://github.com/misakaio/chnroutes2)
-elif [ "${1}" = "geoipdb" ] && [ "$(uname)" = "Darwin" ]; then
-  FILE_LOCAL_NAME='geoip.db'
-  FILE_PERMISSION='644'
-  FILE_LOCAL_PATH="/usr/local/etc/sing-box/share"
-  NEW_FILE_LINK='https://github.com/soffchen/sing-geoip/releases/latest/download/geoip-cn.db'
+  OS_NAME="$(uname)"
+
+  if [ "${OS_NAME}" = "Linux" ]; then
+    FILE_LOCAL_PATH="/usr/local/share/sing-box"
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    FILE_LOCAL_PATH="/usr/local/etc/sing-box/share"
+  else
+    FILE_LOCAL_PATH="error due to unknown operating system"
+    exit
+  fi
+
 
 # geosite.db, for sing-box, for linux, from soffchen | MetaCubeX
 # MetaCubeX 的 geosite:cn 源换成了 [ChinaMax_Domain](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash/ChinaMax)
-elif [ "${1}" = "geositedb" ] && [ "$(uname)" = "Linux" ]; then
+elif [ "${1}" = "geosite-db" ]; then
   FILE_LOCAL_NAME='geosite.db'
   FILE_PERMISSION='644'
-  FILE_LOCAL_PATH="/usr/local/share/sing-box"
   # NEW_FILE_LINK='https://github.com/soffchen/sing-geosite/releases/latest/download/geosite.db'
   NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.db'
 
-# geosite.db, for sing-box, for macos, from soffchen | MetaCubeX
-# MetaCubeX 的 geosite:cn 源换成了 [ChinaMax_Domain](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash/ChinaMax)
-elif [ "${1}" = "geositedb" ] && [ "$(uname)" = "Darwin" ]; then
-  FILE_LOCAL_NAME='geosite.db'
-  FILE_PERMISSION='644'
-  FILE_LOCAL_PATH="/usr/local/etc/sing-box/share"
-  # NEW_FILE_LINK='https://github.com/soffchen/sing-geosite/releases/latest/download/geosite.db'
-  NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.db'
+  OS_NAME="$(uname)"
+
+  if [ "${OS_NAME}" = "Linux" ]; then
+    FILE_LOCAL_PATH="/usr/local/share/sing-box"
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    FILE_LOCAL_PATH="/usr/local/etc/sing-box/share"
+  else
+    FILE_LOCAL_PATH="error due to unknown operating system"
+    exit
+  fi
+
 
 # geoip in mmdb format, for hysteria, for linux, from loyalsoldier
-elif [ "${1}" = "mmdb" ] && [ "$(uname)" = "Linux" ]; then
+elif [ "${1}" = "mmdb" ]; then
   FILE_LOCAL_NAME='loyalsoldier.mmdb'
   FILE_PERMISSION='644'
-  FILE_LOCAL_PATH="/usr/local/share/hysteria"
   NEW_FILE_LINK='https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb'
 
-# geoip in mmdb format, for hysteria, for macos, from loyalsoldier
-elif [ "${1}" = "mmdb" ] && [ "$(uname)" = "Darwin" ]; then
-  FILE_LOCAL_NAME='loyalsoldier.mmdb'
-  FILE_PERMISSION='644'
-  FILE_LOCAL_PATH="/usr/local/etc/hysteria/share"
-  NEW_FILE_LINK='https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb'
+  OS_NAME="$(uname)"
 
-# hysteria binary, linux, amd64
-elif [ "${1}" = "hysteria" ] && [ "$(uname)" = "Linux" ]; then
+  if [ "${OS_NAME}" = "Linux" ]; then
+    FILE_LOCAL_PATH="/usr/local/share/hysteria"
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    FILE_LOCAL_PATH="/usr/local/etc/hysteria/share"
+  else
+    FILE_LOCAL_PATH="error due to unknown operating system"
+    exit
+  fi
+
+
+# hysteria binary
+elif [ "${1}" = "hysteria" ]; then
   FILE_LOCAL_NAME='hysteria'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
-  NEW_FILE_LINK='https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-amd64'
 
-# hysteria binary, macos, arm64 (apple silicon) 
-elif [ "${1}" = "hysteria" ] && [ "$(uname)" = "Darwin" ]; then
-  FILE_LOCAL_NAME='hysteria'
-  FILE_PERMISSION='755'
-  FILE_LOCAL_PATH="/usr/local/bin"
-  NEW_FILE_LINK='https://github.com/apernet/hysteria/releases/latest/download/hysteria-darwin-arm64'
+  OS_NAME="$(uname)"
 
-# xray-core binary, latest release, linux, amd64
-elif [ "${1}" = "xray" ] && [ "$(uname)" = "Linux" ]; then
+  if [ "${OS_NAME}" = "Linux" ]; then
+    NEW_FILE_LINK='https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-amd64'
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    NEW_FILE_LINK='https://github.com/apernet/hysteria/releases/latest/download/hysteria-darwin-arm64'
+  else
+    NEW_FILE_LINK="error due to unknown operating system"
+    exit
+  fi
+  
+
+# xray-core binary, latest release
+elif [ "${1}" = "xray" ]; then
   FILE_LOCAL_NAME='xray.zip'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
-  NEW_FILE_LINK='https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip'
 
-# xray-core binary, latest release, macos, arm64 (apple silicon) 
-elif [ "${1}" = "xray" ] && [ "$(uname)" = "Darwin" ]; then
-  FILE_LOCAL_NAME='xray.zip'
-  FILE_PERMISSION='755'
-  FILE_LOCAL_PATH="/usr/local/bin"
-  NEW_FILE_LINK='https://github.com/XTLS/Xray-core/releases/latest/download/Xray-macos-arm64-v8a.zip'
+  OS_NAME="$(uname)"
 
-# xray-core binary, user specified release, linux, amd64
-elif [ "${1}" = "xray-version" ] && [ "$(uname)" = "Linux" ]; then
+  if [ "${OS_NAME}" = "Linux" ]; then
+    NEW_FILE_LINK='https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip'
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    NEW_FILE_LINK='https://github.com/XTLS/Xray-core/releases/latest/download/Xray-macos-arm64-v8a.zip'
+  else
+    NEW_FILE_LINK="error due to unknown operating system"
+    exit
+  fi
+  
+
+# xray-core binary, user specified release
+elif [ "${1}" = "xray-version" ]; then
   VERSION=v"${2}"
   FILE_LOCAL_NAME='xray.zip'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
-  NEW_FILE_LINK="https://github.com/XTLS/Xray-core/releases/download/${VERSION}/Xray-linux-64.zip"
 
-# xray-core binary, user specified release, macos, arm64 (apple silicon) 
-elif [ "${1}" = "xray-version" ] && [ "$(uname)" = "Darwin" ]; then
-  VERSION=v"${2}"
-  FILE_LOCAL_NAME='xray.zip'
-  FILE_PERMISSION='755'
-  FILE_LOCAL_PATH="/usr/local/bin"
-  NEW_FILE_LINK="https://github.com/XTLS/Xray-core/releases/download/${VERSION}/Xray-macos-arm64-v8a.zip"
+  OS_NAME="$(uname)"
 
-# tuic binary, latest release, for linux *SERVER*, x86_64
-elif [ "${1}" = "tuic" ] && [ "$(uname)" = "Linux" ]; then
-  FILE_LOCAL_NAME='tuic'
-  FILE_PERMISSION='755'
-  FILE_LOCAL_PATH="/usr/local/bin"
-  VERSION_API=$(curl -s https://api.github.com/repos/EAimTY/tuic/releases/latest | jq -r '.tag_name')
-  VERSION=$(echo $VERSION_API | sed 's/v//g')
-  NEW_FILE_LINK="https://github.com/EAimTY/tuic/releases/latest/download/tuic-server-${VERSION}-x86_64-linux-gnu"
+  if [ "${OS_NAME}" = "Linux" ]; then
+    NEW_FILE_LINK="https://github.com/XTLS/Xray-core/releases/download/${VERSION}/Xray-linux-64.zip"
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    NEW_FILE_LINK="https://github.com/XTLS/Xray-core/releases/download/${VERSION}/Xray-macos-arm64-v8a.zip"
+  else
+    NEW_FILE_LINK="error due to unknown operating system"
+    exit
+  fi
 
-# tuic binary, latest release, for macos *CLIENT*, arm64 (apple silicon) 
-elif [ "${1}" = "tuic" ] && [ "$(uname)" = "Darwin" ]; then
-  FILE_LOCAL_NAME='tuic'
-  FILE_PERMISSION='755'
-  FILE_LOCAL_PATH="/usr/local/bin"
-  VERSION_API=$(curl -s https://api.github.com/repos/EAimTY/tuic/releases/latest | jq -r '.tag_name')
-  VERSION=$(echo $VERSION_API | sed 's/v//g')
-  NEW_FILE_LINK="https://github.com/EAimTY/tuic/releases/latest/download/tuic-client-${VERSION}-aarch64-macos"
 
-# sing-box binary, latest release, linux, amd64
-elif [ "${1}" = "sing-box" ] && [ "$(uname)" = "Linux" ]; then
+# sing-box binary, latest release
+elif [ "${1}" = "sing-box" ]; then
   FILE_LOCAL_NAME='sing-box.tar.gz'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
   VERSION_API=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name')
   VERSION=$(echo $VERSION_API | sed 's/v//g')
-  NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-${VERSION}-linux-amd64.tar.gz"
 
-# sing-box binary, latest release, macos, arm64 (apple silicon) 
-elif [ "${1}" = "sing-box" ] && [ "$(uname)" = "Darwin" ]; then
-  FILE_LOCAL_NAME='sing-box.tar.gz'
-  FILE_PERMISSION='755'
-  FILE_LOCAL_PATH="/usr/local/bin"
-  VERSION_API=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name')
-  VERSION=$(echo $VERSION_API | sed 's/v//g')
-  NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-${VERSION}-darwin-arm64.tar.gz"
+  OS_NAME="$(uname)"
 
-# sing-box binary, user specified release, linux, amd64
-elif [ "${1}" = "sing-box-version" ] && [ "$(uname)" = "Linux" ]; then
+  if [ "${OS_NAME}" = "Linux" ]; then
+    NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-${VERSION}-linux-amd64.tar.gz"
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-${VERSION}-darwin-arm64.tar.gz"
+  else
+    NEW_FILE_LINK="error due to unknown operating system"
+    exit
+  fi
+
+
+# sing-box binary, user specified release
+elif [ "${1}" = "sing-box-version" ]; then
   VERSION="${2}"
   FILE_LOCAL_NAME='sing-box.tar.gz'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
-  NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/download/v${VERSION}/sing-box-${VERSION}-linux-amd64.tar.gz"
 
-# sing-box binary, user specified release, macos, arm64 (apple silicon) 
-elif [ "${1}" = "sing-box-version" ] && [ "$(uname)" = "Darwin" ]; then
-  VERSION="${2}"
-  FILE_LOCAL_NAME='sing-box.tar.gz'
-  FILE_PERMISSION='755'
-  FILE_LOCAL_PATH="/usr/local/bin"
-  NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/download/v${VERSION}/sing-box-${VERSION}-darwin-arm64.tar.gz"
+  OS_NAME="$(uname)"
+
+  if [ "${OS_NAME}" = "Linux" ]; then
+    NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/download/v${VERSION}/sing-box-${VERSION}-linux-amd64.tar.gz"
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/download/v${VERSION}/sing-box-${VERSION}-darwin-arm64.tar.gz"
+  else
+    NEW_FILE_LINK="error due to unknown operating system"
+    exit
+  fi
+
 
 # warp-go binary, latest release, linux, amd64
-elif [ "${1}" = "warp-go" ] && [ "$(uname)" = "Linux" ]; then
+elif [ "${1}" = "warp-go" ]; then
   FILE_LOCAL_NAME='warp-go.tar.gz'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
   VERSION=$(curl -s https://gitlab.com/api/v4/projects/38543271/releases/ | jq '.[]' | jq -r '.name' | head -1)
   BIN_VERSION=${VERSION:1}
   NEW_FILE_LINK="https://gitlab.com/ProjectWARP/warp-go/-/releases/${VERSION}/downloads/warp-go_${BIN_VERSION}_linux_amd64.tar.gz"
+
+
+# tuic binary, latest release, for linux *SERVER*, x86_64
+elif [ "${1}" = "tuic" ]; then
+  FILE_LOCAL_NAME='tuic'
+  FILE_PERMISSION='755'
+  FILE_LOCAL_PATH="/usr/local/bin"
+  VERSION_API=$(curl -s https://api.github.com/repos/EAimTY/tuic/releases/latest | jq -r '.tag_name')
+  VERSION=$(echo $VERSION_API | sed 's/v//g')
+
+  OS_NAME="$(uname)"
+
+  if [ "${OS_NAME}" = "Linux" ]; then
+    NEW_FILE_LINK="https://github.com/EAimTY/tuic/releases/latest/download/tuic-server-${VERSION}-x86_64-linux-gnu"
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    NEW_FILE_LINK="https://github.com/EAimTY/tuic/releases/latest/download/tuic-client-${VERSION}-aarch64-macos"
+  else
+    NEW_FILE_LINK="error due to unknown operating system"
+    exit
+  fi
+
 
 else
   FILE_LOCAL_NAME='ERROR'
@@ -209,7 +241,7 @@ fi
 
 function echo_job() {
   echo ''
-  echo ">> \$OS_TYPE is $(uname)"
+  echo ">> \$OS_NAME is $(uname)"
   echo ">> \$FILE_LOCAL_NAME is ${FILE_LOCAL_NAME}"
   echo ">> \$FILE_LOCAL_PATH is ${FILE_LOCAL_PATH}"
   echo ">> \$FILE_PERMISSION is ${FILE_PERMISSION}"
