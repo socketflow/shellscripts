@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# [version] 20230406
+# [version] 20230411
 
 # [title] this is a generic file updater script
 # [title] 这是一个通用性的文件更新脚本
@@ -55,7 +55,7 @@ elif [ "${1}" = "geosite" ]; then
 elif [ "${1}" = "geoip-db" ]; then
   FILE_LOCAL_NAME='geoip.db'
   FILE_PERMISSION='644'
-  NEW_FILE_LINK='https://github.com/soffchen/sing-geoip/releases/latest/download/geoip-cn.db'
+  NEW_FILE_LINK='https://github.com/soffchen/sing-geoip/releases/latest/download/geoip.db'
 
   OS_NAME="$(uname)"
 
