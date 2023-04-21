@@ -1,235 +1,265 @@
 #!/usr/bin/env bash
 set -e
 
-# [version] 20230406
+# [version] 20230422-dev1
 
 # [title] this is a generic file updater script
 # [title] 这是一个通用性的文件更新脚本
 # [reference] 变量用 {} 的解释：https://stackoverflow.com/questions/8748831/when-do-we-need-curly-braces-around-shell-variables
 
 
-# 1 [variable] 定义一些要用到的变量
+## 1 ROUTING FILE DOWNLOAD LINK
 
-# geoip.dat, for xray, for linux, from loyalsoldier | soffchen
+# 1.1 [geoip.dat]
+# for xray, from loyalsoldier | soffchen
 # soffchen的 cn ipv4 源换成了 [chnroutes2](https://github.com/misakaio/chnroutes2)
 if [ "${1}" = "geoip" ]; then
+  FILE_LOCAL_PATH='/usr/local/share/xray'
   FILE_LOCAL_NAME='geoip.dat'
   FILE_PERMISSION='644'
+
   # NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat'
-  NEW_FILE_LINK='https://github.com/soffchen/geoip/releases/latest/download/geoip.dat'
-
-  OS_NAME="$(uname)"
-
-  if [ "${OS_NAME}" = "Linux" ]; then
-    FILE_LOCAL_PATH="/usr/local/share/xray"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    FILE_LOCAL_PATH="/usr/local/etc/xray/share"
-  else
-    FILE_LOCAL_PATH="error due to unknown operating system"
-    exit
-  fi
+  # NEW_FILE_LINK='https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/release/geoip.dat'
+  # NEW_FILE_LINK='https://github.com/soffchen/geoip/releases/latest/download/geoip.dat'
+  GITHUB_USER='soffchen'
+  GITHUB_REPO='geoip'
+  GITHUB_FILE='geoip.dat'
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
 
-# geosite.dat, for xray, for linux, from loyalsoldier | MetaCubeX
+# 1.2 [geosite.dat]
+# for xray, from loyalsoldier | MetaCubeX
 # MetaCubeX 的 geosite:cn 源换成了 [ChinaMax_Domain](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash/ChinaMax)
 elif [ "${1}" = "geosite" ]; then
+  FILE_LOCAL_PATH='/usr/local/share/xray'
   FILE_LOCAL_NAME='geosite.dat'
   FILE_PERMISSION='644'
+
   # NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat'
-  NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat'
-
-  OS_NAME="$(uname)"
-
-  if [ "${OS_NAME}" = "Linux" ]; then
-    FILE_LOCAL_PATH="/usr/local/share/xray"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    FILE_LOCAL_PATH="/usr/local/etc/xray/share"
-  else
-    FILE_LOCAL_PATH="error due to unknown operating system"
-    exit
-  fi
+  # NEW_FILE_LINK='https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/release/geosite.dat'
+  # NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat'
+  GITHUB_USER='MetaCubeX'
+  GITHUB_REPO='meta-rules-dat'
+  GITHUB_FILE='geosite.dat'
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
 
-# geoip.db, for sing-box, for linux, from soffchen
+# 1.3 [geoip.db]
+# for sing-box, from soffchen
 # soffchen的 cn ipv4 源换成了 [chnroutes2](https://github.com/misakaio/chnroutes2)
 elif [ "${1}" = "geoip-db" ]; then
+  FILE_LOCAL_PATH='/usr/local/share/sing-box'
   FILE_LOCAL_NAME='geoip.db'
   FILE_PERMISSION='644'
-  NEW_FILE_LINK='https://github.com/soffchen/sing-geoip/releases/latest/download/geoip-cn.db'
+  # NEW_FILE_LINK='https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/release/geoip.db'
 
-  OS_NAME="$(uname)"
-
-  if [ "${OS_NAME}" = "Linux" ]; then
-    FILE_LOCAL_PATH="/usr/local/share/sing-box"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    FILE_LOCAL_PATH="/usr/local/etc/sing-box/share"
-  else
-    FILE_LOCAL_PATH="error due to unknown operating system"
-    exit
-  fi
+  # NEW_FILE_LINK='https://github.com/soffchen/sing-geoip/releases/latest/download/geoip.db'
+  GITHUB_USER='soffchen'
+  GITHUB_REPO='sing-geoip'
+  GITHUB_FILE='geoip.db'
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
 
-# geosite.db, for sing-box, for linux, from soffchen | MetaCubeX
+# 1.4 [geosite.db]
+# for sing-box, from soffchen | MetaCubeX
 # MetaCubeX 的 geosite:cn 源换成了 [ChinaMax_Domain](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash/ChinaMax)
 elif [ "${1}" = "geosite-db" ]; then
+  FILE_LOCAL_PATH='/usr/local/share/sing-box'
   FILE_LOCAL_NAME='geosite.db'
   FILE_PERMISSION='644'
+
   # NEW_FILE_LINK='https://github.com/soffchen/sing-geosite/releases/latest/download/geosite.db'
-  NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.db'
-
-  OS_NAME="$(uname)"
-
-  if [ "${OS_NAME}" = "Linux" ]; then
-    FILE_LOCAL_PATH="/usr/local/share/sing-box"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    FILE_LOCAL_PATH="/usr/local/etc/sing-box/share"
-  else
-    FILE_LOCAL_PATH="error due to unknown operating system"
-    exit
-  fi
+  # NEW_FILE_LINK='https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/release/geosite.db'
+  # NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.db'
+  GITHUB_USER='MetaCubeX'
+  GITHUB_REPO='meta-rules-dat'
+  GITHUB_FILE='geosite.db'
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
 
-# geoip in mmdb format, for hysteria, for linux, from loyalsoldier
+# 1.5 [mmdb]
+# for hysteria, from loyalsoldier
 elif [ "${1}" = "mmdb" ]; then
+  FILE_LOCAL_PATH='/usr/local/share/hysteria'
   FILE_LOCAL_NAME='loyalsoldier.mmdb'
   FILE_PERMISSION='644'
-  NEW_FILE_LINK='https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb'
 
-  OS_NAME="$(uname)"
-
-  if [ "${OS_NAME}" = "Linux" ]; then
-    FILE_LOCAL_PATH="/usr/local/share/hysteria"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    FILE_LOCAL_PATH="/usr/local/etc/hysteria/share"
-  else
-    FILE_LOCAL_PATH="error due to unknown operating system"
-    exit
-  fi
+  # NEW_FILE_LINK='https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb'
+  GITHUB_USER='Loyalsoldier'
+  GITHUB_REPO='geoip'
+  GITHUB_FILE='Country.mmdb'
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
 
-# hysteria binary
-elif [ "${1}" = "hysteria" ]; then
-  FILE_LOCAL_NAME='hysteria'
-  FILE_PERMISSION='755'
-  FILE_LOCAL_PATH="/usr/local/bin"
+## 2 BINARY DOWNLOAD LINK
 
-  OS_NAME="$(uname)"
-
-  if [ "${OS_NAME}" = "Linux" ]; then
-    NEW_FILE_LINK='https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-amd64'
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    NEW_FILE_LINK='https://github.com/apernet/hysteria/releases/latest/download/hysteria-darwin-arm64'
-  else
-    NEW_FILE_LINK="error due to unknown operating system"
-    exit
-  fi
-  
-
+# 2.1 [xray]
 # xray-core binary, latest release
 elif [ "${1}" = "xray" ]; then
   FILE_LOCAL_NAME='xray.zip'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
 
-  OS_NAME="$(uname)"
+  GITHUB_USER='XTLS'
+  GITHUB_REPO='Xray-core'
 
+  # get binary link for target platform
+  OS_NAME="$(uname)"
   if [ "${OS_NAME}" = "Linux" ]; then
-    NEW_FILE_LINK='https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip'
+    GITHUB_FILE='Xray-linux-64.zip'
   elif [ "${OS_NAME}" = "Darwin" ]; then
-    NEW_FILE_LINK='https://github.com/XTLS/Xray-core/releases/latest/download/Xray-macos-arm64-v8a.zip'
+    GITHUB_FILE='Xray-macos-arm64-v8a.zip'
   else
-    NEW_FILE_LINK="error due to unknown operating system"
+    GITHUB_FILE='Unknown-OS'
     exit
   fi
-  
 
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
+
+
+
+# 2.2 [xray-version]
 # xray-core binary, user specified release
 elif [ "${1}" = "xray-version" ]; then
-  VERSION=v"${2}"
   FILE_LOCAL_NAME='xray.zip'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
 
-  OS_NAME="$(uname)"
+  GITHUB_VERSION=v"${2}"
 
+  GITHUB_USER='XTLS'
+  GITHUB_REPO='Xray-core'
+
+  # get binary link for target platform
+  OS_NAME="$(uname)"
   if [ "${OS_NAME}" = "Linux" ]; then
-    NEW_FILE_LINK="https://github.com/XTLS/Xray-core/releases/download/${VERSION}/Xray-linux-64.zip"
+    GITHUB_FILE='Xray-linux-64.zip'
   elif [ "${OS_NAME}" = "Darwin" ]; then
-    NEW_FILE_LINK="https://github.com/XTLS/Xray-core/releases/download/${VERSION}/Xray-macos-arm64-v8a.zip"
+    GITHUB_FILE='Xray-macos-arm64-v8a.zip'
   else
-    NEW_FILE_LINK="error due to unknown operating system"
+    GITHUB_FILE='Unknown-OS'
     exit
   fi
 
+  # 因为Xray的release中不包含版本号，所以不需要用API，直接用latest的固定下载链接就可以
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/download/${GITHUB_VERSION}/${GITHUB_FILE}"
 
-# sing-box binary, latest release
+
+# 2.3 [sing-box]
+# sing-box binary, latest stable release
 elif [ "${1}" = "sing-box" ]; then
   FILE_LOCAL_NAME='sing-box.tar.gz'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
-  VERSION_API=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name')
-  VERSION=$(echo $VERSION_API | sed 's/v//g')
+
+  GITHUB_USER='SagerNet'
+  GITHUB_REPO='sing-box'
+
+  # 因为sing-box的release中包含版本号，所以需要用API来生成动态的下载链接
+  GITHUB_VERSION_API=$(curl -s https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest | jq -r '.tag_name')
+  GITHUB_VERSION=$(echo $GITHUB_VERSION_API | sed 's/v//g')
 
   OS_NAME="$(uname)"
-
   if [ "${OS_NAME}" = "Linux" ]; then
-    NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-${VERSION}-linux-amd64.tar.gz"
+    GITHUB_FILE="sing-box-${GITHUB_VERSION}-linux-amd64.tar.gz"
   elif [ "${OS_NAME}" = "Darwin" ]; then
-    NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-${VERSION}-darwin-arm64.tar.gz"
+    GITHUB_FILE="sing-box-${GITHUB_VERSION}-darwin-arm64.tar.gz"
   else
-    NEW_FILE_LINK="error due to unknown operating system"
+    GITHUB_FILE='Unknown-OS'
     exit
   fi
 
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/download/v${GITHUB_VERSION}/${GITHUB_FILE}"
 
+
+# 2.4 [sing-box]
 # sing-box binary, user specified release
 elif [ "${1}" = "sing-box-version" ]; then
-  VERSION="${2}"
   FILE_LOCAL_NAME='sing-box.tar.gz'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
 
-  OS_NAME="$(uname)"
+  GITHUB_USER='SagerNet'
+  GITHUB_REPO='sing-box'
 
+  GITHUB_VERSION="${2}"
+
+  OS_NAME="$(uname)"
   if [ "${OS_NAME}" = "Linux" ]; then
-    NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/download/v${VERSION}/sing-box-${VERSION}-linux-amd64.tar.gz"
+    GITHUB_FILE="sing-box-${GITHUB_VERSION}-linux-amd64.tar.gz"
   elif [ "${OS_NAME}" = "Darwin" ]; then
-    NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/download/v${VERSION}/sing-box-${VERSION}-darwin-arm64.tar.gz"
+    GITHUB_FILE="sing-box-${GITHUB_VERSION}-darwin-arm64.tar.gz"
   else
-    NEW_FILE_LINK="error due to unknown operating system"
+    GITHUB_FILE='Unknown-OS'
     exit
   fi
 
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/download/v${GITHUB_VERSION}/${GITHUB_FILE}"
 
+
+# 2.5 [warp-go]
 # warp-go binary, latest release, linux, amd64
 elif [ "${1}" = "warp-go" ]; then
   FILE_LOCAL_NAME='warp-go.tar.gz'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
-  VERSION=$(curl -s https://gitlab.com/api/v4/projects/38543271/releases/ | jq '.[]' | jq -r '.name' | head -1)
-  BIN_VERSION=${VERSION:1}
-  NEW_FILE_LINK="https://gitlab.com/ProjectWARP/warp-go/-/releases/${VERSION}/downloads/warp-go_${BIN_VERSION}_linux_amd64.tar.gz"
+
+  GITLAB_USER='ProjectWARP'
+  GITLAB_REPO='warp-go'
+
+  GITLAB_VERSION_API=$(curl -s https://gitlab.com/api/v4/projects/38543271/releases/ | jq '.[]' | jq -r '.name' | head -1)
+  GITLAB_VERSION=${GITLAB_VERSION_API:1}
+
+  NEW_FILE_LINK="https://gitlab.com/${GITLAB_USER}/${GITLAB_REPO}/-/releases/${GITLAB_VERSION}/downloads/warp-go_${GITLAB_VERSION}_linux_amd64.tar.gz"
 
 
-# tuic binary, latest release, for linux *SERVER*, x86_64
+# 2.6 [hysteria]
+# hysteria binary, latest release
+elif [ "${1}" = "hysteria" ]; then
+  FILE_LOCAL_NAME='hysteria'
+  FILE_PERMISSION='755'
+  FILE_LOCAL_PATH="/usr/local/bin"
+
+  GITHUB_USER='apernet'
+  GITHUB_REPO='hysteria'
+
+  OS_NAME="$(uname)"
+  if [ "${OS_NAME}" = "Linux" ]; then
+    GITHUB_FILE='hysteria-linux-amd64'
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    GITHUB_FILE='hysteria-darwin-arm64'
+  else
+    GITHUB_FILE='Unknown-OS'
+    exit
+  fi
+
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
+
+
+# 2.7 [tuic]
+# tuic binary, latest release
 elif [ "${1}" = "tuic" ]; then
   FILE_LOCAL_NAME='tuic'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
-  VERSION_API=$(curl -s https://api.github.com/repos/EAimTY/tuic/releases/latest | jq -r '.tag_name')
-  VERSION=$(echo $VERSION_API | sed 's/v//g')
+
+  GITHUB_USER='EAimTY'
+  GITHUB_REPO='tuic'
+
+  GITHUB_VERSION_API=$(curl -s https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest | jq -r '.tag_name')
+  GITHUB_VERSION=$(echo $GITHUB_VERSION_API | sed 's/v//g')
 
   OS_NAME="$(uname)"
-
   if [ "${OS_NAME}" = "Linux" ]; then
-    NEW_FILE_LINK="https://github.com/EAimTY/tuic/releases/latest/download/tuic-server-${VERSION}-x86_64-linux-gnu"
+    GITHUB_FILE="tuic-server-${GITHUB_VERSION}-x86_64-linux-gnu"
   elif [ "${OS_NAME}" = "Darwin" ]; then
-    NEW_FILE_LINK="https://github.com/EAimTY/tuic/releases/latest/download/tuic-client-${VERSION}-aarch64-macos"
+    GITHUB_FILE="tuic-client-${GITHUB_VERSION}-aarch64-macos"
   else
-    NEW_FILE_LINK="error due to unknown operating system"
+    GITHUB_FILE='Unknown-OS'
     exit
   fi
 
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
 else
   FILE_LOCAL_NAME='ERROR'
@@ -239,6 +269,10 @@ else
 
 fi
 
+
+## 3. FUNCTIONS
+
+# 3.1
 function echo_job() {
   echo ''
   echo ">> \$OS_NAME is $(uname)"
@@ -248,7 +282,8 @@ function echo_job() {
   echo ">> \$NEW_FILE_LINK is ${NEW_FILE_LINK}"
 }
 
-# 创建一个临时文件夹，如果创建失败则退出
+
+# 3.2 创建一个临时文件夹，如果创建失败则退出
 function make_tmpdir() {
   TMP_DIR=$(mktemp -d) || exit 1
   echo ''
@@ -256,6 +291,7 @@ function make_tmpdir() {
   echo ''
 }
 
+# 3.3 下载操作
 # $1 是新版本的远程下载地址， $2 是本地文件名
 function download_target_to_tmpdir() {
   if curl -L "${1}" -o "${TMP_DIR}/${2}"; then
@@ -269,16 +305,23 @@ function download_target_to_tmpdir() {
   fi
 }
 
+
+# 3.4 下载checksum，一直不会写
 # fucntion download_checksum_to_tmp() {
 #   some code here
 # }
 
+
+# 3.5 验证checksum，一直不会写
 # fucntion checksum() {
 #   some code here
 # }
 
+
+# 3.6 处理压缩文件
 # 如果下载的xray的zip文件，就需要先解压出binary文件（其他文件没用）
 function uncompress_tmpfile() {
+
   if [ -f ${TMP_DIR}/xray.zip ]; then
     echo ''
     echo ">> Zip file is found in ${TMP_DIR}"
@@ -289,6 +332,7 @@ function uncompress_tmpfile() {
     FILE_LOCAL_NAME='xray'
     echo ''
     echo ">> FILE_LOCAL_NAME changed to ${FILE_LOCAL_NAME}"
+
   elif [ -f ${TMP_DIR}/sing-box.tar.gz ]; then
     echo ''
     echo ">> tar.gz file is found in ${TMP_DIR}"
@@ -298,6 +342,7 @@ function uncompress_tmpfile() {
     FILE_LOCAL_NAME='sing-box'
     echo ''
     echo ">> FILE_LOCAL_NAME changed to ${FILE_LOCAL_NAME}"
+
   elif [ -f ${TMP_DIR}/warp-go.tar.gz ]; then
     echo ''
     echo ">> tar.gz file is found in ${TMP_DIR}"
@@ -307,12 +352,17 @@ function uncompress_tmpfile() {
     FILE_LOCAL_NAME='warp-go'
     echo ''
     echo ">> FILE_LOCAL_NAME changed to ${FILE_LOCAL_NAME}"
+
   else
     echo ''
     echo ">> No compressed file found. Continue to installation."
+
   fi
+
 }
 
+
+# 3.7 检查路径，没有的话就创建文件夹
 function check_install_path() {
   if [ -d "${FILE_LOCAL_PATH}" ]; then
     echo ''
@@ -325,6 +375,7 @@ function check_install_path() {
 }
 
 
+# 3.8 安装下载、解压好的文件
 # $1是权限，$2是下载到临时文件的新文件，$3是目标path
 function install_tmpfile() {
   if install -b -m "$1" "${TMP_DIR}/${2}" "${3}"; then
@@ -339,20 +390,26 @@ function install_tmpfile() {
 }
 
 
-# 清理临时文件，$1是脚本创建的临时文件夹地址
+# 3.9 清理临时文件夹
+# $1是脚本创建的临时文件夹地址
 function cleanup_tmpfile() {
   if rm -r -f "${TMP_DIR}"; then
     echo ''
     echo ">> ${TMP_DIR} and its contents has been cleaned up."
+    echo ''
   else
     echo ''
     echo '>> ERROR: Tmp File Removal Failed! Please check your file or try again.'
+    echo ''
     exit 1
   fi
 }
 
 
-# 定义主流程
+
+## 4. 主流程
+
+# 4.1 定义主流程
 function main() {
   echo_job
   make_tmpdir
@@ -365,5 +422,5 @@ function main() {
 }
 
 
-# 执行主流程
+# 4.2 执行主流程
 main "$@"
