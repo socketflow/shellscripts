@@ -1,11 +1,20 @@
 #!/usr/bin/env bash
 set -e
 
-# [version] 20230422-dev1
+# [version] 20230422-dev2
 
 # [title] this is a generic file updater script
 # [title] 这是一个通用性的文件更新脚本
 # [reference] 变量用 {} 的解释：https://stackoverflow.com/questions/8748831/when-do-we-need-curly-braces-around-shell-variables
+
+
+# 重复的获取、应该写成一个公式
+# function get_latest_metadata () {
+#   # latest release 的 API 获取链接
+#   ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+#   ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
+#   ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+# }
 
 
 ## 1 ROUTING FILE DOWNLOAD LINK
@@ -26,6 +35,11 @@ if [ "${1}" = "geoip" ]; then
   GITHUB_FILE='geoip.dat'
   NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.assets[0].updated_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+
 
 # 1.2 [geosite.dat]
 # for xray, from loyalsoldier | MetaCubeX
@@ -43,6 +57,11 @@ elif [ "${1}" = "geosite" ]; then
   GITHUB_FILE='geosite.dat'
   NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.assets[0].updated_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+
 
 # 1.3 [geoip.db]
 # for sing-box, from soffchen
@@ -51,13 +70,18 @@ elif [ "${1}" = "geoip-db" ]; then
   FILE_LOCAL_PATH='/usr/local/share/sing-box'
   FILE_LOCAL_NAME='geoip.db'
   FILE_PERMISSION='644'
-  # NEW_FILE_LINK='https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/release/geoip.db'
 
+  # NEW_FILE_LINK='https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/release/geoip.db'
   # NEW_FILE_LINK='https://github.com/soffchen/sing-geoip/releases/latest/download/geoip.db'
   GITHUB_USER='soffchen'
   GITHUB_REPO='sing-geoip'
   GITHUB_FILE='geoip.db'
   NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
+
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.assets[0].updated_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
 
 
 # 1.4 [geosite.db]
@@ -76,6 +100,11 @@ elif [ "${1}" = "geosite-db" ]; then
   GITHUB_FILE='geosite.db'
   NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.assets[0].updated_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+
 
 # 1.5 [mmdb]
 # for hysteria, from loyalsoldier
@@ -89,6 +118,11 @@ elif [ "${1}" = "mmdb" ]; then
   GITHUB_REPO='geoip'
   GITHUB_FILE='Country.mmdb'
   NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
+
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.assets[0].updated_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
 
 
 ## 2 BINARY DOWNLOAD LINK
@@ -116,6 +150,11 @@ elif [ "${1}" = "xray" ]; then
 
   NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+
 
 
 # 2.2 [xray-version]
@@ -125,7 +164,7 @@ elif [ "${1}" = "xray-version" ]; then
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
 
-  GITHUB_VERSION=v"${2}"
+  GITHUB_VERSION="${2}"
 
   GITHUB_USER='XTLS'
   GITHUB_REPO='Xray-core'
@@ -142,7 +181,13 @@ elif [ "${1}" = "xray-version" ]; then
   fi
 
   # 因为Xray的release中不包含版本号，所以不需要用API，直接用latest的固定下载链接就可以
-  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/download/${GITHUB_VERSION}/${GITHUB_FILE}"
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/download/v${GITHUB_VERSION}/${GITHUB_FILE}"
+
+  # 指定tag的API获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/tags/v${GITHUB_VERSION}"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+
 
 
 # 2.3 [sing-box]
@@ -171,6 +216,11 @@ elif [ "${1}" = "sing-box" ]; then
 
   NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/download/v${GITHUB_VERSION}/${GITHUB_FILE}"
 
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+
 
 # 2.4 [sing-box]
 # sing-box binary, user specified release
@@ -196,6 +246,11 @@ elif [ "${1}" = "sing-box-version" ]; then
 
   NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/download/v${GITHUB_VERSION}/${GITHUB_FILE}"
 
+  # 指定tag的API获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/tags/v${GITHUB_VERSION}"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+
 
 # 2.5 [warp-go]
 # warp-go binary, latest release, linux, amd64
@@ -206,11 +261,17 @@ elif [ "${1}" = "warp-go" ]; then
 
   GITLAB_USER='ProjectWARP'
   GITLAB_REPO='warp-go'
+  GITLAB_REPO_ID='38543271'
 
-  GITLAB_VERSION_API=$(curl -s https://gitlab.com/api/v4/projects/38543271/releases/ | jq '.[]' | jq -r '.name' | head -1)
-  GITLAB_VERSION=${GITLAB_VERSION_API:1}
+  ORIGINAL_METADATA="https://gitlab.com/api/v4/projects/${GITLAB_REPO_ID}/releases"
+
+  ORIGINAL_METADATA_VERSION=$(curl -s ${ORIGINAL_METADATA} | jq '.[]' | jq -r '.name' | head -1)
+  GITLAB_VERSION=${ORIGINAL_METADATA_VERSION:1}
 
   NEW_FILE_LINK="https://gitlab.com/${GITLAB_USER}/${GITLAB_REPO}/-/releases/${GITLAB_VERSION}/downloads/warp-go_${GITLAB_VERSION}_linux_amd64.tar.gz"
+
+  ORIGINAL_METADATA_RELEASE_DATE=$(curl -s ${ORIGINAL_METADATA} | jq '.[]' | jq -r '.released_at' | head -1)
+  ORIGINAL_METADATA_RELEASE_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%S" "${ORIGINAL_METADATA_RELEASE_DATE}" +"%Y%m%d%H%M.%S")
 
 
 # 2.6 [hysteria]
@@ -234,6 +295,11 @@ elif [ "${1}" = "hysteria" ]; then
   fi
 
   NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
+
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
 
 
 # 2.7 [tuic]
@@ -261,6 +327,12 @@ elif [ "${1}" = "tuic" ]; then
 
   NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+
+
 else
   FILE_LOCAL_NAME='ERROR'
   FILE_PERMISSION='ERROR'
@@ -275,11 +347,13 @@ fi
 # 3.1
 function echo_job() {
   echo ''
-  echo ">> \$OS_NAME is $(uname)"
-  echo ">> \$FILE_LOCAL_NAME is ${FILE_LOCAL_NAME}"
-  echo ">> \$FILE_LOCAL_PATH is ${FILE_LOCAL_PATH}"
-  echo ">> \$FILE_PERMISSION is ${FILE_PERMISSION}"
-  echo ">> \$NEW_FILE_LINK is ${NEW_FILE_LINK}"
+  echo ">> \$OS_NAME is: $(uname)"
+  echo ">> \$FILE_LOCAL_NAME is: ${FILE_LOCAL_NAME}"
+  echo ">> \$FILE_LOCAL_PATH is: ${FILE_LOCAL_PATH}"
+  echo ">> \$FILE_PERMISSION is: ${FILE_PERMISSION}"
+  echo ">> \$NEW_FILE_LINK is: ${NEW_FILE_LINK}"
+  echo ">> \$ORIGINAL_METADATA is: ${ORIGINAL_METADATA}"
+  echo ">> \$ORIGINAL_METADATA_PUBLISH_DATE is: ${ORIGINAL_METADATA_PUBLISH_DATE}"
 }
 
 
@@ -307,13 +381,13 @@ function download_target_to_tmpdir() {
 
 
 # 3.4 下载checksum，一直不会写
-# fucntion download_checksum_to_tmp() {
+# function fun download_checksum_to_tmp() {
 #   some code here
 # }
 
 
 # 3.5 验证checksum，一直不会写
-# fucntion checksum() {
+# function fun checksum() {
 #   some code here
 # }
 
@@ -390,7 +464,16 @@ function install_tmpfile() {
 }
 
 
-# 3.9 清理临时文件夹
+# 3.9 修改文件日期，从下载到mac上的日期，修改成GitHub release的日期
+# $1是从API获取的release日期，$2是要修改日期的本地文件
+function real_publish_date() {
+  touch -t "${1}" "${2}"
+  echo ''
+  echo ">> ${FILE_LOCAL_NAME}'s date has been changed to ${ORIGINAL_METADATA_PUBLISH_DATE}"
+}
+
+
+# 3.10 清理临时文件夹
 # $1是脚本创建的临时文件夹地址
 function cleanup_tmpfile() {
   if rm -r -f "${TMP_DIR}"; then
@@ -417,7 +500,8 @@ function main() {
   # checksum
   uncompress_tmpfile
   check_install_path
-  install_tmpfile "${FILE_PERMISSION}" "${FILE_LOCAL_NAME}" "$FILE_LOCAL_PATH"
+  install_tmpfile "${FILE_PERMISSION}" "${FILE_LOCAL_NAME}" "${FILE_LOCAL_PATH}"
+  real_publish_date "${ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED}" "${FILE_LOCAL_PATH}/${FILE_LOCAL_NAME}"  
   cleanup_tmpfile
 }
 
