@@ -1,11 +1,20 @@
 #!/usr/bin/env bash
 set -e
 
-# [version] 20230411-2
+# [version] 20230422 (build.20230422-dev2)
 
 # [title] this is a generic file updater script
 # [title] 这是一个通用性的文件更新脚本
 # [reference] 变量用 {} 的解释：https://stackoverflow.com/questions/8748831/when-do-we-need-curly-braces-around-shell-variables
+
+
+# 重复的获取、应该写成一个公式
+# function get_latest_metadata () {
+#   # latest release 的 API 获取链接
+#   ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+#   ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
+#   ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+# }
 
 
 ## 1 ROUTING FILE DOWNLOAD LINK
@@ -14,232 +23,314 @@ set -e
 # for xray, from loyalsoldier | soffchen
 # soffchen的 cn ipv4 源换成了 [chnroutes2](https://github.com/misakaio/chnroutes2)
 if [ "${1}" = "geoip" ]; then
+  FILE_LOCAL_PATH='/usr/local/share/xray'
   FILE_LOCAL_NAME='geoip.dat'
   FILE_PERMISSION='644'
+
   # NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat'
   # NEW_FILE_LINK='https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/release/geoip.dat'
-  NEW_FILE_LINK='https://github.com/soffchen/geoip/releases/latest/download/geoip.dat'
+  # NEW_FILE_LINK='https://github.com/soffchen/geoip/releases/latest/download/geoip.dat'
+  GITHUB_USER='soffchen'
+  GITHUB_REPO='geoip'
+  GITHUB_FILE='geoip.dat'
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
-  OS_NAME="$(uname)"
-
-  if [ "${OS_NAME}" = "Linux" ]; then
-    FILE_LOCAL_PATH="/usr/local/share/xray"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    FILE_LOCAL_PATH="/usr/local/etc/xray/share"
-  else
-    FILE_LOCAL_PATH="error due to unknown operating system"
-    exit
-  fi
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.assets[0].updated_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
 
 
-# 1.2 [geosite.dat] 
+# 1.2 [geosite.dat]
 # for xray, from loyalsoldier | MetaCubeX
 # MetaCubeX 的 geosite:cn 源换成了 [ChinaMax_Domain](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash/ChinaMax)
 elif [ "${1}" = "geosite" ]; then
+  FILE_LOCAL_PATH='/usr/local/share/xray'
   FILE_LOCAL_NAME='geosite.dat'
   FILE_PERMISSION='644'
+
   # NEW_FILE_LINK='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat'
   # NEW_FILE_LINK='https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/release/geosite.dat'
-  NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat'
+  # NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat'
+  GITHUB_USER='MetaCubeX'
+  GITHUB_REPO='meta-rules-dat'
+  GITHUB_FILE='geosite.dat'
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
-  OS_NAME="$(uname)"
-
-  if [ "${OS_NAME}" = "Linux" ]; then
-    FILE_LOCAL_PATH="/usr/local/share/xray"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    FILE_LOCAL_PATH="/usr/local/etc/xray/share"
-  else
-    FILE_LOCAL_PATH="error due to unknown operating system"
-    exit
-  fi
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.assets[0].updated_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
 
 
 # 1.3 [geoip.db]
 # for sing-box, from soffchen
 # soffchen的 cn ipv4 源换成了 [chnroutes2](https://github.com/misakaio/chnroutes2)
 elif [ "${1}" = "geoip-db" ]; then
+  FILE_LOCAL_PATH='/usr/local/share/sing-box'
   FILE_LOCAL_NAME='geoip.db'
   FILE_PERMISSION='644'
+
   # NEW_FILE_LINK='https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/release/geoip.db'
-  NEW_FILE_LINK='https://github.com/soffchen/sing-geoip/releases/latest/download/geoip.db'
+  # NEW_FILE_LINK='https://github.com/soffchen/sing-geoip/releases/latest/download/geoip.db'
+  GITHUB_USER='soffchen'
+  GITHUB_REPO='sing-geoip'
+  GITHUB_FILE='geoip.db'
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
-  OS_NAME="$(uname)"
-
-  if [ "${OS_NAME}" = "Linux" ]; then
-    FILE_LOCAL_PATH="/usr/local/share/sing-box"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    FILE_LOCAL_PATH="/usr/local/etc/sing-box/share"
-  else
-    FILE_LOCAL_PATH="error due to unknown operating system"
-    exit
-  fi
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.assets[0].updated_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
 
 
 # 1.4 [geosite.db]
 # for sing-box, from soffchen | MetaCubeX
 # MetaCubeX 的 geosite:cn 源换成了 [ChinaMax_Domain](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash/ChinaMax)
 elif [ "${1}" = "geosite-db" ]; then
+  FILE_LOCAL_PATH='/usr/local/share/sing-box'
   FILE_LOCAL_NAME='geosite.db'
   FILE_PERMISSION='644'
+
   # NEW_FILE_LINK='https://github.com/soffchen/sing-geosite/releases/latest/download/geosite.db'
   # NEW_FILE_LINK='https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/release/geosite.db'
-  NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.db'
+  # NEW_FILE_LINK='https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.db'
+  GITHUB_USER='MetaCubeX'
+  GITHUB_REPO='meta-rules-dat'
+  GITHUB_FILE='geosite.db'
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
-  OS_NAME="$(uname)"
-
-  if [ "${OS_NAME}" = "Linux" ]; then
-    FILE_LOCAL_PATH="/usr/local/share/sing-box"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    FILE_LOCAL_PATH="/usr/local/etc/sing-box/share"
-  else
-    FILE_LOCAL_PATH="error due to unknown operating system"
-    exit
-  fi
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.assets[0].updated_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
 
 
 # 1.5 [mmdb]
 # for hysteria, from loyalsoldier
 elif [ "${1}" = "mmdb" ]; then
+  FILE_LOCAL_PATH='/usr/local/share/hysteria'
   FILE_LOCAL_NAME='loyalsoldier.mmdb'
   FILE_PERMISSION='644'
-  NEW_FILE_LINK='https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb'
 
-  OS_NAME="$(uname)"
+  # NEW_FILE_LINK='https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb'
+  GITHUB_USER='Loyalsoldier'
+  GITHUB_REPO='geoip'
+  GITHUB_FILE='Country.mmdb'
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
-  if [ "${OS_NAME}" = "Linux" ]; then
-    FILE_LOCAL_PATH="/usr/local/share/hysteria"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    FILE_LOCAL_PATH="/usr/local/etc/hysteria/share"
-  else
-    FILE_LOCAL_PATH="error due to unknown operating system"
-    exit
-  fi
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.assets[0].updated_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
 
 
 ## 2 BINARY DOWNLOAD LINK
 
-# 2.1 [xray-core] bin, latest release
+# 2.1 [xray]
+# xray-core binary, latest release
 elif [ "${1}" = "xray" ]; then
   FILE_LOCAL_NAME='xray.zip'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
 
-  OS_NAME="$(uname)"
+  GITHUB_USER='XTLS'
+  GITHUB_REPO='Xray-core'
 
+  # get binary link for target platform
+  OS_NAME="$(uname)"
   if [ "${OS_NAME}" = "Linux" ]; then
-    NEW_FILE_LINK='https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip'
+    GITHUB_FILE='Xray-linux-64.zip'
   elif [ "${OS_NAME}" = "Darwin" ]; then
-    NEW_FILE_LINK='https://github.com/XTLS/Xray-core/releases/latest/download/Xray-macos-arm64-v8a.zip'
+    GITHUB_FILE='Xray-macos-arm64-v8a.zip'
   else
-    NEW_FILE_LINK="error due to unknown operating system"
+    GITHUB_FILE='Unknown-OS'
     exit
   fi
-  
 
-# 2.2 [xray-core] bin, user specified release
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
+
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+
+
+
+# 2.2 [xray-version]
+# xray-core binary, user specified release
 elif [ "${1}" = "xray-version" ]; then
-  VERSION=v"${2}"
   FILE_LOCAL_NAME='xray.zip'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
 
-  OS_NAME="$(uname)"
+  GITHUB_VERSION="${2}"
 
+  GITHUB_USER='XTLS'
+  GITHUB_REPO='Xray-core'
+
+  # get binary link for target platform
+  OS_NAME="$(uname)"
   if [ "${OS_NAME}" = "Linux" ]; then
-    NEW_FILE_LINK="https://github.com/XTLS/Xray-core/releases/download/${VERSION}/Xray-linux-64.zip"
+    GITHUB_FILE='Xray-linux-64.zip'
   elif [ "${OS_NAME}" = "Darwin" ]; then
-    NEW_FILE_LINK="https://github.com/XTLS/Xray-core/releases/download/${VERSION}/Xray-macos-arm64-v8a.zip"
+    GITHUB_FILE='Xray-macos-arm64-v8a.zip'
   else
-    NEW_FILE_LINK="error due to unknown operating system"
+    GITHUB_FILE='Unknown-OS'
     exit
   fi
 
+  # 因为Xray的release中不包含版本号，所以不需要用API，直接用latest的固定下载链接就可以
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/download/v${GITHUB_VERSION}/${GITHUB_FILE}"
 
-# 2.3 [sing-box] bin, latest release
+  # 指定tag的API获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/tags/v${GITHUB_VERSION}"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+
+
+
+# 2.3 [sing-box]
+# sing-box binary, latest stable release
 elif [ "${1}" = "sing-box" ]; then
   FILE_LOCAL_NAME='sing-box.tar.gz'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
-  VERSION_API=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name')
-  VERSION=$(echo $VERSION_API | sed 's/v//g')
+
+  GITHUB_USER='SagerNet'
+  GITHUB_REPO='sing-box'
+
+  # 因为sing-box的release中包含版本号，所以需要用API来生成动态的下载链接
+  GITHUB_VERSION_API=$(curl -s https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest | jq -r '.tag_name')
+  GITHUB_VERSION=$(echo $GITHUB_VERSION_API | sed 's/v//g')
 
   OS_NAME="$(uname)"
-
   if [ "${OS_NAME}" = "Linux" ]; then
-    NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-${VERSION}-linux-amd64.tar.gz"
+    GITHUB_FILE="sing-box-${GITHUB_VERSION}-linux-amd64.tar.gz"
   elif [ "${OS_NAME}" = "Darwin" ]; then
-    NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-${VERSION}-darwin-arm64.tar.gz"
+    GITHUB_FILE="sing-box-${GITHUB_VERSION}-darwin-arm64.tar.gz"
   else
-    NEW_FILE_LINK="error due to unknown operating system"
+    GITHUB_FILE='Unknown-OS'
     exit
   fi
 
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/download/v${GITHUB_VERSION}/${GITHUB_FILE}"
 
-# 2.4 [sing-box] bin, user specified release
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+
+
+# 2.4 [sing-box]
+# sing-box binary, user specified release
 elif [ "${1}" = "sing-box-version" ]; then
-  VERSION="${2}"
   FILE_LOCAL_NAME='sing-box.tar.gz'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
 
-  OS_NAME="$(uname)"
+  GITHUB_USER='SagerNet'
+  GITHUB_REPO='sing-box'
 
+  GITHUB_VERSION="${2}"
+
+  OS_NAME="$(uname)"
   if [ "${OS_NAME}" = "Linux" ]; then
-    NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/download/v${VERSION}/sing-box-${VERSION}-linux-amd64.tar.gz"
+    GITHUB_FILE="sing-box-${GITHUB_VERSION}-linux-amd64.tar.gz"
   elif [ "${OS_NAME}" = "Darwin" ]; then
-    NEW_FILE_LINK="https://github.com/SagerNet/sing-box/releases/download/v${VERSION}/sing-box-${VERSION}-darwin-arm64.tar.gz"
+    GITHUB_FILE="sing-box-${GITHUB_VERSION}-darwin-arm64.tar.gz"
   else
-    NEW_FILE_LINK="error due to unknown operating system"
+    GITHUB_FILE='Unknown-OS'
     exit
   fi
 
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/download/v${GITHUB_VERSION}/${GITHUB_FILE}"
 
-# 2.5 [warp-go] bin, latest release, linux, amd64
+  # 指定tag的API获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/tags/v${GITHUB_VERSION}"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+
+
+# 2.5 [warp-go]
+# warp-go binary, latest release, linux, amd64
 elif [ "${1}" = "warp-go" ]; then
   FILE_LOCAL_NAME='warp-go.tar.gz'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
-  VERSION=$(curl -s https://gitlab.com/api/v4/projects/38543271/releases/ | jq '.[]' | jq -r '.name' | head -1)
-  BIN_VERSION=${VERSION:1}
-  NEW_FILE_LINK="https://gitlab.com/ProjectWARP/warp-go/-/releases/${VERSION}/downloads/warp-go_${BIN_VERSION}_linux_amd64.tar.gz"
+
+  GITLAB_USER='ProjectWARP'
+  GITLAB_REPO='warp-go'
+  GITLAB_REPO_ID='38543271'
+
+  ORIGINAL_METADATA="https://gitlab.com/api/v4/projects/${GITLAB_REPO_ID}/releases"
+
+  ORIGINAL_METADATA_VERSION=$(curl -s ${ORIGINAL_METADATA} | jq '.[]' | jq -r '.name' | head -1)
+  GITLAB_VERSION=${ORIGINAL_METADATA_VERSION:1}
+
+  NEW_FILE_LINK="https://gitlab.com/${GITLAB_USER}/${GITLAB_REPO}/-/releases/${GITLAB_VERSION}/downloads/warp-go_${GITLAB_VERSION}_linux_amd64.tar.gz"
+
+  ORIGINAL_METADATA_RELEASE_DATE=$(curl -s ${ORIGINAL_METADATA} | jq '.[]' | jq -r '.released_at' | head -1)
+  ORIGINAL_METADATA_RELEASE_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%S" "${ORIGINAL_METADATA_RELEASE_DATE}" +"%Y%m%d%H%M.%S")
 
 
-# 2.6 [hysteria] bin
+# 2.6 [hysteria]
+# hysteria binary, latest release
 elif [ "${1}" = "hysteria" ]; then
   FILE_LOCAL_NAME='hysteria'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
 
-  OS_NAME="$(uname)"
+  GITHUB_USER='apernet'
+  GITHUB_REPO='hysteria'
 
+  OS_NAME="$(uname)"
   if [ "${OS_NAME}" = "Linux" ]; then
-    NEW_FILE_LINK='https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-amd64'
+    GITHUB_FILE='hysteria-linux-amd64'
   elif [ "${OS_NAME}" = "Darwin" ]; then
-    NEW_FILE_LINK='https://github.com/apernet/hysteria/releases/latest/download/hysteria-darwin-arm64'
+    GITHUB_FILE='hysteria-darwin-arm64'
   else
-    NEW_FILE_LINK="error due to unknown operating system"
+    GITHUB_FILE='Unknown-OS'
     exit
   fi
 
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
-# 2.7 [tuic] bin, latest release
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+
+
+# 2.7 [tuic]
+# tuic binary, latest release
 elif [ "${1}" = "tuic" ]; then
   FILE_LOCAL_NAME='tuic'
   FILE_PERMISSION='755'
   FILE_LOCAL_PATH="/usr/local/bin"
-  VERSION_API=$(curl -s https://api.github.com/repos/EAimTY/tuic/releases/latest | jq -r '.tag_name')
-  VERSION=$(echo $VERSION_API | sed 's/v//g')
+
+  GITHUB_USER='EAimTY'
+  GITHUB_REPO='tuic'
+
+  GITHUB_VERSION_API=$(curl -s https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest | jq -r '.tag_name')
+  GITHUB_VERSION=$(echo $GITHUB_VERSION_API | sed 's/v//g')
 
   OS_NAME="$(uname)"
-
   if [ "${OS_NAME}" = "Linux" ]; then
-    NEW_FILE_LINK="https://github.com/EAimTY/tuic/releases/latest/download/tuic-server-${VERSION}-x86_64-linux-gnu"
+    GITHUB_FILE="tuic-server-${GITHUB_VERSION}-x86_64-linux-gnu"
   elif [ "${OS_NAME}" = "Darwin" ]; then
-    NEW_FILE_LINK="https://github.com/EAimTY/tuic/releases/latest/download/tuic-client-${VERSION}-aarch64-macos"
+    GITHUB_FILE="tuic-client-${GITHUB_VERSION}-aarch64-macos"
   else
-    NEW_FILE_LINK="error due to unknown operating system"
+    GITHUB_FILE='Unknown-OS'
     exit
   fi
+
+  NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
+
+  # latest release 的 API 获取链接
+  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
+  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
 
 
 else
@@ -256,11 +347,13 @@ fi
 # 3.1
 function echo_job() {
   echo ''
-  echo ">> \$OS_NAME is $(uname)"
-  echo ">> \$FILE_LOCAL_NAME is ${FILE_LOCAL_NAME}"
-  echo ">> \$FILE_LOCAL_PATH is ${FILE_LOCAL_PATH}"
-  echo ">> \$FILE_PERMISSION is ${FILE_PERMISSION}"
-  echo ">> \$NEW_FILE_LINK is ${NEW_FILE_LINK}"
+  echo ">> \$OS_NAME is: $(uname)"
+  echo ">> \$FILE_LOCAL_NAME is: ${FILE_LOCAL_NAME}"
+  echo ">> \$FILE_LOCAL_PATH is: ${FILE_LOCAL_PATH}"
+  echo ">> \$FILE_PERMISSION is: ${FILE_PERMISSION}"
+  echo ">> \$NEW_FILE_LINK is: ${NEW_FILE_LINK}"
+  echo ">> \$ORIGINAL_METADATA is: ${ORIGINAL_METADATA}"
+  echo ">> \$ORIGINAL_METADATA_PUBLISH_DATE is: ${ORIGINAL_METADATA_PUBLISH_DATE}"
 }
 
 
@@ -288,13 +381,13 @@ function download_target_to_tmpdir() {
 
 
 # 3.4 下载checksum，一直不会写
-# fucntion download_checksum_to_tmp() {
+# function fun download_checksum_to_tmp() {
 #   some code here
 # }
 
 
 # 3.5 验证checksum，一直不会写
-# fucntion checksum() {
+# function fun checksum() {
 #   some code here
 # }
 
@@ -371,7 +464,16 @@ function install_tmpfile() {
 }
 
 
-# 3.9 清理临时文件夹
+# 3.9 修改文件日期，从下载到mac上的日期，修改成GitHub release的日期
+# $1是从API获取的release日期，$2是要修改日期的本地文件
+function real_publish_date() {
+  touch -t "${1}" "${2}"
+  echo ''
+  echo ">> ${FILE_LOCAL_NAME}'s date has been changed to ${ORIGINAL_METADATA_PUBLISH_DATE}"
+}
+
+
+# 3.10 清理临时文件夹
 # $1是脚本创建的临时文件夹地址
 function cleanup_tmpfile() {
   if rm -r -f "${TMP_DIR}"; then
@@ -398,7 +500,8 @@ function main() {
   # checksum
   uncompress_tmpfile
   check_install_path
-  install_tmpfile "${FILE_PERMISSION}" "${FILE_LOCAL_NAME}" "$FILE_LOCAL_PATH"
+  install_tmpfile "${FILE_PERMISSION}" "${FILE_LOCAL_NAME}" "${FILE_LOCAL_PATH}"
+  real_publish_date "${ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED}" "${FILE_LOCAL_PATH}/${FILE_LOCAL_NAME}"  
   cleanup_tmpfile
 }
 
