@@ -1,20 +1,34 @@
 #!/usr/bin/env bash
 set -e
 
-# [version] 20230422-dev2
+# [version] 20230422-dev3
 
 # [title] this is a generic file updater script
 # [title] 这是一个通用性的文件更新脚本
 # [reference] 变量用 {} 的解释：https://stackoverflow.com/questions/8748831/when-do-we-need-curly-braces-around-shell-variables
 
 
-# 重复的获取、应该写成一个公式
-# function get_latest_metadata () {
+
+# ----------- to-do
+# 重复的获取metadata、应该写成一个公式，但不会写
+
+# ${1}
+# API_LATEST="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+# API_TAG="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/tags/v${GITHUB_VERSION}"
+# # ${2}
+# DATE_TYPE_PUBLISH='.published_at'
+# DATE_TYPE_UPDATE='.assets[0].updated_at'
+# # ${3}
+# DATE_FORMAT_GITHUB='%Y-%m-%dT%H:%M:%SZ'
+# DATE_FORMAT_GITLAB='%Y-%m-%dT%H:%M:%S'
+
+# function curl_real_date () {
 #   # latest release 的 API 获取链接
-#   ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
-#   ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.published_at')
-#   ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+#   ORIGINAL_METADATA="${1}"
+#   ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r "${2}")
+#   ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "${3}" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
 # }
+# -----------
 
 
 ## 1 ROUTING FILE DOWNLOAD LINK
@@ -36,9 +50,10 @@ if [ "${1}" = "geoip" ]; then
   NEW_FILE_LINK="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${GITHUB_FILE}"
 
   # latest release 的 API 获取链接
-  ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
-  ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.assets[0].updated_at')
-  ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
+  curl_real_date "${API_LATEST}" "${DATE_TYPE_UPDATE}" "${DATE_FORMAT_GITHUB}"
+  # ORIGINAL_METADATA="https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/releases/latest"
+  # ORIGINAL_METADATA_PUBLISH_DATE=$(curl -s ${ORIGINAL_METADATA} | jq -r '.assets[0].updated_at')
+  # ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "${ORIGINAL_METADATA_PUBLISH_DATE}" +"%Y%m%d%H%M.%S")
 
 
 # 1.2 [geosite.dat]
@@ -380,6 +395,7 @@ function download_target_to_tmpdir() {
 }
 
 
+# ----------- to-do
 # 3.4 下载checksum，一直不会写
 # function fun download_checksum_to_tmp() {
 #   some code here
@@ -390,6 +406,7 @@ function download_target_to_tmpdir() {
 # function fun checksum() {
 #   some code here
 # }
+# ---------- to-do
 
 
 # 3.6 处理压缩文件
@@ -466,7 +483,7 @@ function install_tmpfile() {
 
 # 3.9 修改文件日期，从下载到mac上的日期，修改成GitHub release的日期
 # $1是从API获取的release日期，$2是要修改日期的本地文件
-function real_publish_date() {
+function correct_file_date() {
   touch -t "${1}" "${2}"
   echo ''
   echo ">> ${FILE_LOCAL_NAME}'s date has been changed to ${ORIGINAL_METADATA_PUBLISH_DATE}"
@@ -501,7 +518,7 @@ function main() {
   uncompress_tmpfile
   check_install_path
   install_tmpfile "${FILE_PERMISSION}" "${FILE_LOCAL_NAME}" "${FILE_LOCAL_PATH}"
-  real_publish_date "${ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED}" "${FILE_LOCAL_PATH}/${FILE_LOCAL_NAME}"  
+  correct_file_date "${ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED}" "${FILE_LOCAL_PATH}/${FILE_LOCAL_NAME}"  
   cleanup_tmpfile
 }
 
