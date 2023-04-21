@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# [version] 20230422 (build.20230422-dev2)
+# [version] 20230422-2 (build.20230422-dev2)
 
 # [title] this is a generic file updater script
 # [title] 这是一个通用性的文件更新脚本
@@ -466,7 +466,7 @@ function install_tmpfile() {
 
 # 3.9 修改文件日期，从下载到mac上的日期，修改成GitHub release的日期
 # $1是从API获取的release日期，$2是要修改日期的本地文件
-function real_publish_date() {
+function correct_file_date() {
   touch -t "${1}" "${2}"
   echo ''
   echo ">> ${FILE_LOCAL_NAME}'s date has been changed to ${ORIGINAL_METADATA_PUBLISH_DATE}"
@@ -501,7 +501,7 @@ function main() {
   uncompress_tmpfile
   check_install_path
   install_tmpfile "${FILE_PERMISSION}" "${FILE_LOCAL_NAME}" "${FILE_LOCAL_PATH}"
-  real_publish_date "${ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED}" "${FILE_LOCAL_PATH}/${FILE_LOCAL_NAME}"  
+  correct_file_date "${ORIGINAL_METADATA_PUBLISH_DATE_FORMATTED}" "${FILE_LOCAL_PATH}/${FILE_LOCAL_NAME}"  
   cleanup_tmpfile
 }
 
