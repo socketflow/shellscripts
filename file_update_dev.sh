@@ -67,7 +67,10 @@ function format_date() {
 
 }
 
-# 2.2 使用 API 获取日期
+
+# 根据操作系统选择 date 命令的参数
+# for macOS:  `date -j -f %Y-%m-%dT%H:%M:%SZ`
+# for debian: `date -d`
 function select_os_date_args() {
 
   if [ "${OS_NAME}" = "Linux" ]; then
@@ -81,7 +84,7 @@ function select_os_date_args() {
 }
 
 
-# 2.2 使用 API 获取日期
+# 根据操作系统选择release里面不同的二进制
 function select_os_filename() {
 
   if [ "${OS_NAME}" = "Linux" ]; then
@@ -95,10 +98,7 @@ function select_os_filename() {
 }
 
 
-
-# 1.4 args for `date` command
-# for macOS:  `date -j -f %Y-%m-%dT%H:%M:%SZ`
-# for debian: `date -d`
+# args for `date` command
 DATE_ARGS_GITHUB=''
 DATE_ARGS_GITHUB_LINUX="-d"
 DATE_ARGS_GITHUB_DARWIN="-j -f "%Y-%m-%dT%H:%M:%SZ""
