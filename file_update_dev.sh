@@ -27,24 +27,6 @@ GITHUB_REPO=''
 GITHUB_FILENAME=''
 
 
-# 1.4 args for `date` command
-# for macOS:  `date -j -f %Y-%m-%dT%H:%M:%SZ`
-# for debian: `date -d`
-DATE_ARGS_GITHUB=''
-DATE_ARGS_GITHUB_LINUX="-d"
-DATE_ARGS_GITHUB_DARWIN="-j -f "%Y-%m-%dT%H:%M:%SZ""
-
-# 根据系统选定变量
-if [ "${OS_NAME}" = "Linux" ]; then
-  DATE_ARGS_GITHUB=${DATE_ARGS_GITHUB_LINUX}
-elif [ "${OS_NAME}" = "Darwin" ]; then
-  DATE_ARGS_GITHUB=${DATE_ARGS_GITHUB_DARWIN}
-else
-  DATE_ARGS_GITHUB='ERROR: UNKNOWN OPERATING SYSTEM'
-fi
-
-
-
 
 # ------------------------------------------------------------
 # 2 定义一些 global function 和变量
@@ -84,6 +66,44 @@ function format_date() {
   GITHUB_RELEASE_ASSET_UPDATED_AT_FORMATTED=$(date ${DATE_ARGS_GITHUB} ${GITHUB_RELEASE_ASSET_UPDATED_AT} +"%Y%m%d%H%M.%S")
 
 }
+
+# 2.2 使用 API 获取日期
+function select_os_date_args() {
+
+  if [ "${OS_NAME}" = "Linux" ]; then
+    DATE_ARGS_GITHUB="${1}"
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    DATE_ARGS_GITHUB="${2}"
+  else
+    DATE_ARGS_GITHUB='ERROR: UNKNOWN OPERATING SYSTEM'
+  fi
+
+}
+
+
+# 2.2 使用 API 获取日期
+function select_os_filename() {
+
+  if [ "${OS_NAME}" = "Linux" ]; then
+    GITHUB_FILENAME="${1}"
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    GITHUB_FILENAME="${2}"
+  else
+    GITHUB_FILENAME='ERROR: UNKNOWN OPERATING SYSTEM'
+  fi
+
+}
+
+
+
+# 1.4 args for `date` command
+# for macOS:  `date -j -f %Y-%m-%dT%H:%M:%SZ`
+# for debian: `date -d`
+DATE_ARGS_GITHUB=''
+DATE_ARGS_GITHUB_LINUX="-d"
+DATE_ARGS_GITHUB_DARWIN="-j -f "%Y-%m-%dT%H:%M:%SZ""
+
+select_os_date_args "${DATE_ARGS_GITHUB_LINUX}" "${DATE_ARGS_GITHUB_DARWIN}"
 
 
 # 根据输入选择，赋予不同的变量值
@@ -198,20 +218,13 @@ elif [ "${1}" = "xray" ]; then
   GITHUB_FILENAME_DARWIN='Xray-macos-arm64-v8a.zip'
 
   # get binary link for target platform
-  if [ "${OS_NAME}" = "Linux" ]; then
-    GITHUB_FILENAME="${GITHUB_FILENAME_LINUX}"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    GITHUB_FILENAME="${GITHUB_FILENAME_DARWIN}"
-  else
-    GITHUB_FILENAME='ERROR: UNKNOWN OPERATING SYSTEM'
-  fi
+  select_os_filename "${GITHUB_FILENAME_LINUX}" "${GITHUB_FILENAME_DARWIN}"
 
   # 根据GitHub文件信息生成链接
   generate_latest_release_links
 
   # 格式化日期
   format_date
-
 
 
 elif [ "${1}" = "xray-beta" ]; then
@@ -229,19 +242,14 @@ elif [ "${1}" = "xray-beta" ]; then
   GITHUB_FILENAME_DARWIN='Xray-macos-arm64-v8a.zip'
 
   # get binary link for target platform
-  if [ "${OS_NAME}" = "Linux" ]; then
-    GITHUB_FILENAME="${GITHUB_FILENAME_LINUX}"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    GITHUB_FILENAME="${GITHUB_FILENAME_DARWIN}"
-  else
-    GITHUB_FILENAME='ERROR: UNKNOWN OPERATING SYSTEM'
-  fi
+  select_os_filename "${GITHUB_FILENAME_LINUX}" "${GITHUB_FILENAME_DARWIN}"
 
   # 根据GitHub文件信息生成链接
   generate_pre_release_links
 
   # 格式化日期
   format_date
+
 
 elif [ "${1}" = "sing-box" ]; then
 
@@ -258,20 +266,13 @@ elif [ "${1}" = "sing-box" ]; then
   GITHUB_FILENAME_DARWIN='darwin-arm64.tar.gz'
 
   # get binary link for target platform
-  if [ "${OS_NAME}" = "Linux" ]; then
-    GITHUB_FILENAME="${GITHUB_FILENAME_LINUX}"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    GITHUB_FILENAME="${GITHUB_FILENAME_DARWIN}"
-  else
-    GITHUB_FILENAME='ERROR: UNKNOWN OPERATING SYSTEM'
-  fi
+  select_os_filename "${GITHUB_FILENAME_LINUX}" "${GITHUB_FILENAME_DARWIN}"
 
   # 根据GitHub文件信息生成链接
   generate_latest_release_links
 
   # 格式化日期
   format_date
-
 
 
 elif [ "${1}" = "sing-box-beta" ]; then
@@ -289,13 +290,7 @@ elif [ "${1}" = "sing-box-beta" ]; then
   GITHUB_FILENAME_DARWIN='darwin-arm64.tar.gz'
 
   # get binary link for target platform
-  if [ "${OS_NAME}" = "Linux" ]; then
-    GITHUB_FILENAME="${GITHUB_FILENAME_LINUX}"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    GITHUB_FILENAME="${GITHUB_FILENAME_DARWIN}"
-  else
-    GITHUB_FILENAME='ERROR: UNKNOWN OPERATING SYSTEM'
-  fi
+  select_os_filename "${GITHUB_FILENAME_LINUX}" "${GITHUB_FILENAME_DARWIN}"
 
   # 根据GitHub文件信息生成链接
   generate_pre_release_links
@@ -319,13 +314,7 @@ elif [ "${1}" = "hysteria" ]; then
   GITHUB_FILENAME_DARWIN='darwin-arm64'
 
   # get binary link for target platform
-  if [ "${OS_NAME}" = "Linux" ]; then
-    GITHUB_FILENAME="${GITHUB_FILENAME_LINUX}"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    GITHUB_FILENAME="${GITHUB_FILENAME_DARWIN}"
-  else
-    GITHUB_FILENAME='ERROR: UNKNOWN OPERATING SYSTEM'
-  fi
+  select_os_filename "${GITHUB_FILENAME_LINUX}" "${GITHUB_FILENAME_DARWIN}"
 
   # 根据GitHub文件信息生成链接
   generate_latest_release_links
@@ -349,13 +338,7 @@ elif [ "${1}" = "tuic" ]; then
   GITHUB_FILENAME_DARWIN='aarch64-macos'
 
   # get binary link for target platform
-  if [ "${OS_NAME}" = "Linux" ]; then
-    GITHUB_FILENAME="${GITHUB_FILENAME_LINUX}"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    GITHUB_FILENAME="${GITHUB_FILENAME_DARWIN}"
-  else
-    GITHUB_FILENAME='ERROR: UNKNOWN OPERATING SYSTEM'
-  fi
+  select_os_filename "${GITHUB_FILENAME_LINUX}" "${GITHUB_FILENAME_DARWIN}"
 
   # 根据GitHub文件信息生成链接
   generate_latest_release_links
@@ -372,6 +355,7 @@ else
   GITHUB_REPO='ERROR'
   GITHUB_FILENAME='ERROR'
   exit
+
 
 fi
 
