@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
+
 # ------------------------------------------------------------
 # [VERSION] 20230429-dev1
 # [TITLE] this is an updater script for some network utilities
@@ -25,7 +26,6 @@ LOCAL_SHARE_DIR='/usr/local/share'
 GITHUB_USER=''
 GITHUB_REPO=''
 GITHUB_FILENAME=''
-
 
 
 # ------------------------------------------------------------
@@ -59,7 +59,7 @@ function generate_pre_release_links() {
 }
 
 
-# 2.2 使用 API 获取日期
+# 用 API 获取日期
 function format_date() {
 
   GITHUB_RELEASE_PUBLISHED_AT_FORMATTED=$(date ${DATE_ARGS_GITHUB} ${GITHUB_RELEASE_PUBLISHED_AT} +"%Y%m%d%H%M.%S")
@@ -98,7 +98,7 @@ function select_os_filename() {
 }
 
 
-# args for `date` command
+# 用上面的function获取正确的 date 命令参数
 DATE_ARGS_GITHUB=''
 DATE_ARGS_GITHUB_LINUX="-d"
 DATE_ARGS_GITHUB_DARWIN="-j -f "%Y-%m-%dT%H:%M:%SZ""
@@ -108,7 +108,7 @@ select_os_date_args "${DATE_ARGS_GITHUB_LINUX}" "${DATE_ARGS_GITHUB_DARWIN}"
 
 # 根据输入选择，赋予不同的变量值
 
-if [ "${1}" = "geoip.mmdb" ]; then
+if   [ "${1}" = "geoip.mmdb"    ];  then
 
   # 本地文件信息
   FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/hysteria"
@@ -127,7 +127,7 @@ if [ "${1}" = "geoip.mmdb" ]; then
   format_date
 
 
-elif [ "${1}" = "geoip.dat" ]; then
+elif [ "${1}" = "geoip.dat"     ];  then
 
   # 本地文件信息
   FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/xray"
@@ -146,7 +146,7 @@ elif [ "${1}" = "geoip.dat" ]; then
   format_date
 
 
-elif [ "${1}" = "geoip.db" ]; then
+elif [ "${1}" = "geoip.db"      ];  then
 
   # 本地文件信息
   FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/sing-box"
@@ -165,7 +165,7 @@ elif [ "${1}" = "geoip.db" ]; then
   format_date
 
 
-elif [ "${1}" = "geosite.dat" ]; then
+elif [ "${1}" = "geosite.dat"   ];  then
 
   # 本地文件信息
   FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/xray"
@@ -184,7 +184,7 @@ elif [ "${1}" = "geosite.dat" ]; then
   format_date
 
 
-elif [ "${1}" = "geosite.db" ]; then
+elif [ "${1}" = "geosite.db"    ];  then
 
   # 本地文件信息
   FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/sing-box"
@@ -203,7 +203,7 @@ elif [ "${1}" = "geosite.db" ]; then
   format_date
 
 
-elif [ "${1}" = "xray" ]; then
+elif [ "${1}" = "xray"          ];  then
 
   # 本地文件信息
   FILE_LOCAL_PATH="${LOCAL_BIN_DIR}"
@@ -227,7 +227,7 @@ elif [ "${1}" = "xray" ]; then
   format_date
 
 
-elif [ "${1}" = "xray-beta" ]; then
+elif [ "${1}" = "xray-beta"     ];  then
 
   # 本地文件信息
   FILE_LOCAL_PATH="${LOCAL_BIN_DIR}"
@@ -251,7 +251,7 @@ elif [ "${1}" = "xray-beta" ]; then
   format_date
 
 
-elif [ "${1}" = "sing-box" ]; then
+elif [ "${1}" = "sing-box"      ];  then
 
   # 本地文件信息
   FILE_LOCAL_PATH="${LOCAL_BIN_DIR}"
@@ -275,7 +275,7 @@ elif [ "${1}" = "sing-box" ]; then
   format_date
 
 
-elif [ "${1}" = "sing-box-beta" ]; then
+elif [ "${1}" = "sing-box-beta" ];  then
 
   # 本地文件信息
   FILE_LOCAL_PATH="${LOCAL_BIN_DIR}"
@@ -299,7 +299,7 @@ elif [ "${1}" = "sing-box-beta" ]; then
   format_date
 
 
-elif [ "${1}" = "hysteria" ]; then
+elif [ "${1}" = "hysteria"      ];  then
 
   # 本地文件信息
   FILE_LOCAL_PATH="${LOCAL_BIN_DIR}"
@@ -323,7 +323,7 @@ elif [ "${1}" = "hysteria" ]; then
   format_date
 
 
-elif [ "${1}" = "tuic" ]; then
+elif [ "${1}" = "tuic"          ];  then
 
   # 本地文件信息
   FILE_LOCAL_PATH="${LOCAL_BIN_DIR}"
@@ -354,7 +354,7 @@ else
   GITHUB_USER='ERROR'
   GITHUB_REPO='ERROR'
   GITHUB_FILENAME='ERROR'
-  exit
+  return 1
 
 
 fi
