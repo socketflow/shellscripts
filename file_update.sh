@@ -3,7 +3,7 @@ set -e
 
 
 # ------------------------------------------------------------
-# [VERSION] 20230429-dev1
+# [VERSION] 20230430-dev1
 # [TITLE] this is an updater script for some network utilities
 # [title] 这是一个网络工具相关的升级脚本
 # ------------------------------------------------------------
@@ -45,7 +45,6 @@ function generate_latest_release_links() {
 
 }
 
-
 # 生成 pre-release 链接
 function generate_pre_release_links() {
 
@@ -58,20 +57,39 @@ function generate_pre_release_links() {
 
 }
 
+# 生成 gitlab 链接
+function generate_gitlab_release_links() {
+
+  GITLAB_API="https://gitlab.com/api/v4/projects/${GITLAB_REPO_ID}/releases"
+
+  GITLAB_RELEASE_VERSION=$(curl -s "${GITLAB_API}" | jq -r .[0].tag_name)
+  GITLAB_RELEASE_RELEASED_AT=$(curl -s "${GITLAB_API}" | jq -r .[0].released_at)
+  GITLAB_RELEASE_TAG_PATH=$(curl -s "${GITLAB_API}" | jq -r .[0].tag_path)
+  GITLAB_RELEASE_ASSET_DOWNLOAD_URL=$(curl -s "${GITLAB_API}" | jq -r " .[0].assets.links | map(select(.name | test(\"$GITLAB_FILENAME\"))) | .[0].url" )
+  # 简单hack一下下载地址，就不用修改main里面的变量名称了
+  GITHUB_RELEASE_ASSET_DOWNLOAD_URL="${GITLAB_RELEASE_ASSET_DOWNLOAD_URL}"
+}
 
 # 用 API 获取日期
-function format_date() {
+function format_github_date() {
 
   GITHUB_RELEASE_PUBLISHED_AT_FORMATTED=$(date ${DATE_ARGS_GITHUB} ${GITHUB_RELEASE_PUBLISHED_AT} +"%Y%m%d%H%M.%S")
-  GITHUB_RELEASE_ASSET_UPDATED_AT_FORMATTED=$(date ${DATE_ARGS_GITHUB} ${GITHUB_RELEASE_ASSET_UPDATED_AT} +"%Y%m%d%H%M.%S")
+  ASSET_DATE_FORMATTED=$(date ${DATE_ARGS_GITHUB} ${GITHUB_RELEASE_ASSET_UPDATED_AT} +"%Y%m%d%H%M.%S")
 
 }
 
+# 用 API 获取日期
+function format_gitlab_date() {
+
+  ASSET_DATE_FORMATTED=$(date ${DATE_ARGS_GITLAB} ${GITLAB_RELEASE_RELEASED_AT} +"%Y%m%d%H%M.%S")
+  # 简单hack一下下载地址，就不用修改main里面的变量名称了
+  GITHUB_RELEASE_ASSET_UPDATED_AT="${GITLAB_RELEASE_RELEASED_AT}"
+}
 
 # 根据操作系统选择 date 命令的参数
 # for macOS:  `date -j -f %Y-%m-%dT%H:%M:%SZ`
 # for debian: `date -d`
-function select_os_date_args() {
+function select_os_date_args_github() {
 
   if [ "${OS_NAME}" = "Linux" ]; then
     DATE_ARGS_GITHUB="${1}"
@@ -83,6 +101,20 @@ function select_os_date_args() {
 
 }
 
+# 根据操作系统选择 date 命令的参数
+# for macOS:  `date -j -f %Y-%m-%dT%H:%M:%S`
+# for debian: `date -d`
+function select_os_date_args_gitlab() {
+
+  if [ "${OS_NAME}" = "Linux" ]; then
+    DATE_ARGS_GITLAB="${1}"
+  elif [ "${OS_NAME}" = "Darwin" ]; then
+    DATE_ARGS_GITLAB="${2}"
+  else
+    DATE_ARGS_GITLAB='ERROR: UNKNOWN OPERATING SYSTEM'
+  fi
+
+}
 
 # 根据操作系统选择release里面不同的二进制
 function select_os_filename() {
@@ -97,37 +129,23 @@ function select_os_filename() {
 
 }
 
-
 # 用上面的function获取正确的 date 命令参数
 DATE_ARGS_GITHUB=''
 DATE_ARGS_GITHUB_LINUX="-d"
 DATE_ARGS_GITHUB_DARWIN="-j -f "%Y-%m-%dT%H:%M:%SZ""
+# 获取github相关的正确date格式
+select_os_date_args_github "${DATE_ARGS_GITHUB_LINUX}" "${DATE_ARGS_GITHUB_DARWIN}"
 
-select_os_date_args "${DATE_ARGS_GITHUB_LINUX}" "${DATE_ARGS_GITHUB_DARWIN}"
+DATE_ARGS_GITLAB=''
+DATE_ARGS_GITLAB_LINUX="-d"
+DATE_ARGS_GITLAB_DARWIN="-j -f "%Y-%m-%dT%H:%M:%S""
+# 获取gitlab相关的正确date格式
+select_os_date_args_gitlab "${DATE_ARGS_GITLAB_LINUX}" "${DATE_ARGS_GITLAB_DARWIN}"
 
 
 # 根据输入选择，赋予不同的变量值
 
-if   [ "${1}" = "geoip.mmdb"    ];  then
-
-  # 本地文件信息
-  FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/hysteria"
-  FILE_LOCAL_NAME='geoip.mmdb'
-  FILE_PERMISSION='644'
-
-  # https://api.github.com/repos/Loyalsoldier/geoip/releases
-  GITHUB_USER='Loyalsoldier'
-  GITHUB_REPO='geoip'
-  GITHUB_FILENAME='Country.mmdb'
-
-  # 根据GitHub文件信息生成链接
-  generate_latest_release_links
-
-  # 格式化日期
-  format_date
-
-
-elif [ "${1}" = "geoip.dat"     ];  then
+if   [ "${1}" = "geoip.dat"     ];  then
 
   # 本地文件信息
   FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/xray"
@@ -143,27 +161,7 @@ elif [ "${1}" = "geoip.dat"     ];  then
   generate_latest_release_links
 
   # 格式化日期
-  format_date
-
-
-elif [ "${1}" = "geoip.db"      ];  then
-
-  # 本地文件信息
-  FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/sing-box"
-  FILE_LOCAL_NAME='geoip.db'
-  FILE_PERMISSION='644'
-
-  # https://api.github.com/repos/soffchen/sing-geoip/releases
-  GITHUB_USER='soffchen'
-  GITHUB_REPO='sing-geoip'
-  GITHUB_FILENAME='geoip.db'
-
-  # 根据GitHub文件信息生成链接
-  generate_latest_release_links
-
-  # 格式化日期
-  format_date
-
+  format_github_date
 
 elif [ "${1}" = "geosite.dat"   ];  then
 
@@ -181,8 +179,25 @@ elif [ "${1}" = "geosite.dat"   ];  then
   generate_latest_release_links
 
   # 格式化日期
-  format_date
+  format_github_date
 
+elif [ "${1}" = "geoip.db"      ];  then
+
+  # 本地文件信息
+  FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/sing-box"
+  FILE_LOCAL_NAME='geoip.db'
+  FILE_PERMISSION='644'
+
+  # https://api.github.com/repos/soffchen/sing-geoip/releases
+  GITHUB_USER='soffchen'
+  GITHUB_REPO='sing-geoip'
+  GITHUB_FILENAME='geoip.db'
+
+  # 根据GitHub文件信息生成链接
+  generate_latest_release_links
+
+  # 格式化日期
+  format_github_date
 
 elif [ "${1}" = "geosite.db"    ];  then
 
@@ -200,8 +215,25 @@ elif [ "${1}" = "geosite.db"    ];  then
   generate_latest_release_links
 
   # 格式化日期
-  format_date
+  format_github_date
 
+elif [ "${1}" = "geoip.mmdb"    ];  then
+
+  # 本地文件信息
+  FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/hysteria"
+  FILE_LOCAL_NAME='geoip.mmdb'
+  FILE_PERMISSION='644'
+
+  # https://api.github.com/repos/Loyalsoldier/geoip/releases
+  GITHUB_USER='Loyalsoldier'
+  GITHUB_REPO='geoip'
+  GITHUB_FILENAME='Country.mmdb'
+
+  # 根据GitHub文件信息生成链接
+  generate_latest_release_links
+
+  # 格式化日期
+  format_github_date
 
 elif [ "${1}" = "xray"          ];  then
 
@@ -224,7 +256,7 @@ elif [ "${1}" = "xray"          ];  then
   generate_latest_release_links
 
   # 格式化日期
-  format_date
+  format_github_date
 
 
 elif [ "${1}" = "xray-beta"     ];  then
@@ -248,7 +280,7 @@ elif [ "${1}" = "xray-beta"     ];  then
   generate_pre_release_links
 
   # 格式化日期
-  format_date
+  format_github_date
 
 
 elif [ "${1}" = "sing-box"      ];  then
@@ -272,7 +304,7 @@ elif [ "${1}" = "sing-box"      ];  then
   generate_latest_release_links
 
   # 格式化日期
-  format_date
+  format_github_date
 
 
 elif [ "${1}" = "sing-box-beta" ];  then
@@ -296,7 +328,7 @@ elif [ "${1}" = "sing-box-beta" ];  then
   generate_pre_release_links
 
   # 格式化日期
-  format_date
+  format_github_date
 
 
 elif [ "${1}" = "hysteria"      ];  then
@@ -320,7 +352,7 @@ elif [ "${1}" = "hysteria"      ];  then
   generate_latest_release_links
 
   # 格式化日期
-  format_date
+  format_github_date
 
 
 elif [ "${1}" = "tuic"          ];  then
@@ -344,8 +376,27 @@ elif [ "${1}" = "tuic"          ];  then
   generate_latest_release_links
 
   # 格式化日期
-  format_date
+  format_github_date
 
+
+elif [ "${1}" = "warp-go"       ];  then
+
+  # 本地文件信息
+  FILE_LOCAL_PATH="${LOCAL_BIN_DIR}"
+  FILE_LOCAL_NAME='warp-go.tar.gz'
+  FILE_PERMISSION='755'
+
+  # https://gitlab.com/api/v4/projects/38543271/releases
+  GITLAB_USER='ProjectWARP'
+  GITLAB_REPO='warp-go'
+  GITLAB_REPO_ID='38543271'
+  GITLAB_FILENAME='linux_amd64.tar.gz'
+
+  # 根据GitHub文件信息生成链接
+  generate_gitlab_release_links
+
+  # 格式化日期
+  format_gitlab_date
 
 else
   FILE_LOCAL_PATH='ERROR'
@@ -379,7 +430,13 @@ function echo_job() {
   echo ">> \$GITHUB_RELEASE_PUBLISHED_AT_FORMATTED is: ${GITHUB_RELEASE_PUBLISHED_AT_FORMATTED}"
   echo ">> \$GITHUB_RELEASE_ASSET_DOWNLOAD_URL is: ${GITHUB_RELEASE_ASSET_DOWNLOAD_URL}"
   echo ">> \$GITHUB_RELEASE_ASSET_UPDATED_AT is: ${GITHUB_RELEASE_ASSET_UPDATED_AT}"
-  echo ">> \$GITHUB_RELEASE_ASSET_UPDATED_AT_FORMATTED is: ${GITHUB_RELEASE_ASSET_UPDATED_AT_FORMATTED}"
+  echo ''
+  echo ">> \$GITLAB_RELEASE_VERSION is: ${GITLAB_RELEASE_VERSION}"
+  echo ">> \$GITLAB_RELEASE_RELEASED_AT is: ${GITLAB_RELEASE_RELEASED_AT}"
+  echo ">> \$GITLAB_RELEASE_TAG_PATH is: ${GITLAB_RELEASE_TAG_PATH}"
+  echo ">> \$GITLAB_RELEASE_ASSET_DOWNLOAD_URL is: ${GITLAB_RELEASE_ASSET_DOWNLOAD_URL}"
+  echo ''
+  echo ">> \$ASSET_DATE_FORMATTED is: ${ASSET_DATE_FORMATTED}"
   echo ''
 
 }
@@ -424,7 +481,7 @@ function uncompress_tmpfile() {
 
   if [ -f ${TMP_DIR}/xray.zip ]; then
     echo ''
-    echo ">> Zip file is found in ${TMP_DIR}"
+    echo ">> xray.zip file is found in ${TMP_DIR}"
     # https://unix.stackexchange.com/questions/14120/extract-only-a-specific-file-from-a-zipped-archive-to-a-given-directory
     unzip -j "${TMP_DIR}/xray.zip" "xray" -d "${TMP_DIR}"
     echo ''
@@ -435,7 +492,7 @@ function uncompress_tmpfile() {
 
   elif [ -f ${TMP_DIR}/sing-box.tar.gz ]; then
     echo ''
-    echo ">> tar.gz file is found in ${TMP_DIR}"
+    echo ">> sing-box.tar.gz file is found in ${TMP_DIR}"
     tar -xzf "${TMP_DIR}/sing-box.tar.gz" --strip-components=1 -C "${TMP_DIR}"
     echo ''
     echo ">> tar.gz file extracted"
@@ -445,7 +502,7 @@ function uncompress_tmpfile() {
 
   elif [ -f ${TMP_DIR}/warp-go.tar.gz ]; then
     echo ''
-    echo ">> tar.gz file is found in ${TMP_DIR}"
+    echo ">> warp-go.tar.gz file is found in ${TMP_DIR}"
     tar -xzf "${TMP_DIR}/warp-go.tar.gz" -C "${TMP_DIR}"
     echo ''
     echo ">> tar.gz file extracted"
@@ -524,7 +581,7 @@ function main() {
   uncompress_tmpfile
   check_install_path
   install_tmpfile "${FILE_PERMISSION}" "${FILE_LOCAL_NAME}" "${FILE_LOCAL_PATH}"
-  rectify_file_date "${GITHUB_RELEASE_ASSET_UPDATED_AT_FORMATTED}" "${FILE_LOCAL_PATH}/${FILE_LOCAL_NAME}"  
+  rectify_file_date "${ASSET_DATE_FORMATTED}" "${FILE_LOCAL_PATH}/${FILE_LOCAL_NAME}"  
   cleanup_tmpfile
 }
 
