@@ -3,7 +3,7 @@ set -e
 
 
 # ------------------------------------------------------------
-# [VERSION] 20230430-dev1
+# [VERSION] 20230505-dev1
 # [TITLE] this is an updater script for some network utilities
 # [title] 这是一个网络工具相关的升级脚本
 # ------------------------------------------------------------
@@ -378,6 +378,28 @@ elif [ "${1}" = "tuic"          ];  then
   # 格式化日期
   format_github_date
 
+elif [ "${1}" = "wgcf"          ];  then
+
+  # 本地文件信息
+  FILE_LOCAL_PATH="${LOCAL_BIN_DIR}"
+  FILE_LOCAL_NAME='wgcf'
+  FILE_PERMISSION='755'
+
+  # https://api.github.com/repos/apernet/hysteria/releases
+  GITHUB_USER='ViRb3'
+  GITHUB_REPO='wgcf'
+  GITHUB_FILENAME=''
+  GITHUB_FILENAME_LINUX='linux_amd64'
+  GITHUB_FILENAME_DARWIN='darwin_arm64'
+
+  # get binary link for target platform
+  select_os_filename "${GITHUB_FILENAME_LINUX}" "${GITHUB_FILENAME_DARWIN}"
+
+  # 根据GitHub文件信息生成链接
+  generate_latest_release_links
+
+  # 格式化日期
+  format_github_date
 
 elif [ "${1}" = "warp-go"       ];  then
 
