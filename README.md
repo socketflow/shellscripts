@@ -1,4 +1,4 @@
-这个仓库存放一些我常用的 shell script
+这个仓库存放一些我常用的 shell script.
 
 ### 1. file_update.sh
 一个简单的拉取github更新的脚本
