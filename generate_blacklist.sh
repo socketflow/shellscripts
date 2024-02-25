@@ -16,7 +16,7 @@ fi
 
 # Check for multiple patterns in the log file and extract IP addresses
 echo "Searching for malicious patterns in the log file..."
-if ! grep -E "bad path|REALITY: processed invalid connection" "$LOG_FILE"* | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | sort -u > "$FILE.tmp"; then
+if ! grep -E "bad path" "$LOG_FILE"* | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | sort -u > "$FILE.tmp"; then
     echo "No matching patterns found or an error occurred."
     exit 1
 else
