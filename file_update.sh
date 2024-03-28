@@ -3,8 +3,8 @@ set -e
 
 
 # --------------------------------------------------------------
-# [VERSION] v0.9.1
-# [DATE]    20230505
+# [VERSION] v0.9.2
+# [DATE]    20240328
 # [TITLE]   this is an updater script for some network utilities
 # [title]   这是一个网络工具相关的升级脚本
 # --------------------------------------------------------------
@@ -58,18 +58,6 @@ function generate_pre_release_links() {
 
 }
 
-# 生成 gitlab 链接
-function generate_gitlab_release_links() {
-
-  GITLAB_API="https://gitlab.com/api/v4/projects/${GITLAB_REPO_ID}/releases"
-
-  GITLAB_RELEASE_VERSION=$(curl -s "${GITLAB_API}" | jq -r .[0].tag_name)
-  GITLAB_RELEASE_RELEASED_AT=$(curl -s "${GITLAB_API}" | jq -r .[0].released_at)
-  GITLAB_RELEASE_TAG_PATH=$(curl -s "${GITLAB_API}" | jq -r .[0].tag_path)
-  GITLAB_RELEASE_ASSET_DOWNLOAD_URL=$(curl -s "${GITLAB_API}" | jq -r " .[0].assets.links | map(select(.name | test(\"$GITLAB_FILENAME\"))) | .[0].url" )
-  # 简单hack一下下载地址，就不用修改main里面的变量名称了
-  GITHUB_RELEASE_ASSET_DOWNLOAD_URL="${GITLAB_RELEASE_ASSET_DOWNLOAD_URL}"
-}
 
 # 用 API 获取日期
 function format_github_date() {
@@ -79,13 +67,6 @@ function format_github_date() {
 
 }
 
-# 用 API 获取日期
-function format_gitlab_date() {
-
-  ASSET_DATE_FORMATTED=$(date ${DATE_ARGS_GITLAB} ${GITLAB_RELEASE_RELEASED_AT} +"%Y%m%d%H%M.%S")
-  # 简单hack一下下载地址，就不用修改main里面的变量名称了
-  GITHUB_RELEASE_ASSET_UPDATED_AT="${GITLAB_RELEASE_RELEASED_AT}"
-}
 
 # 根据操作系统选择 date 命令的参数
 # for macOS:  `date -j -f %Y-%m-%dT%H:%M:%SZ`
@@ -102,20 +83,6 @@ function select_os_date_args_github() {
 
 }
 
-# 根据操作系统选择 date 命令的参数
-# for macOS:  `date -j -f %Y-%m-%dT%H:%M:%S`
-# for debian: `date -d`
-function select_os_date_args_gitlab() {
-
-  if [ "${OS_NAME}" = "Linux" ]; then
-    DATE_ARGS_GITLAB="${1}"
-  elif [ "${OS_NAME}" = "Darwin" ]; then
-    DATE_ARGS_GITLAB="${2}"
-  else
-    DATE_ARGS_GITLAB='ERROR: UNKNOWN OPERATING SYSTEM'
-  fi
-
-}
 
 # 根据操作系统选择release里面不同的二进制
 function select_os_filename() {
@@ -136,12 +103,6 @@ DATE_ARGS_GITHUB_LINUX="-d"
 DATE_ARGS_GITHUB_DARWIN="-j -f "%Y-%m-%dT%H:%M:%SZ""
 # 获取github相关的正确date格式
 select_os_date_args_github "${DATE_ARGS_GITHUB_LINUX}" "${DATE_ARGS_GITHUB_DARWIN}"
-
-DATE_ARGS_GITLAB=''
-DATE_ARGS_GITLAB_LINUX="-d"
-DATE_ARGS_GITLAB_DARWIN="-j -f "%Y-%m-%dT%H:%M:%S""
-# 获取gitlab相关的正确date格式
-select_os_date_args_gitlab "${DATE_ARGS_GITLAB_LINUX}" "${DATE_ARGS_GITLAB_DARWIN}"
 
 
 # 根据输入选择，赋予不同的变量值
@@ -402,24 +363,6 @@ elif [ "${1}" = "wgcf"          ];  then
   # 格式化日期
   format_github_date
 
-elif [ "${1}" = "warp-go"       ];  then
-
-  # 本地文件信息
-  FILE_LOCAL_PATH="${LOCAL_BIN_DIR}"
-  FILE_LOCAL_NAME='warp-go.tar.gz'
-  FILE_PERMISSION='755'
-
-  # https://gitlab.com/api/v4/projects/38543271/releases
-  GITLAB_USER='ProjectWARP'
-  GITLAB_REPO='warp-go'
-  GITLAB_REPO_ID='38543271'
-  GITLAB_FILENAME='linux_amd64.tar.gz'
-
-  # 根据GitHub文件信息生成链接
-  generate_gitlab_release_links
-
-  # 格式化日期
-  format_gitlab_date
 
 else
   FILE_LOCAL_PATH='ERROR'
@@ -453,11 +396,6 @@ function echo_job() {
   echo ">> \$GITHUB_RELEASE_PUBLISHED_AT_FORMATTED is: ${GITHUB_RELEASE_PUBLISHED_AT_FORMATTED}"
   echo ">> \$GITHUB_RELEASE_ASSET_DOWNLOAD_URL is: ${GITHUB_RELEASE_ASSET_DOWNLOAD_URL}"
   echo ">> \$GITHUB_RELEASE_ASSET_UPDATED_AT is: ${GITHUB_RELEASE_ASSET_UPDATED_AT}"
-  echo ''
-  echo ">> \$GITLAB_RELEASE_VERSION is: ${GITLAB_RELEASE_VERSION}"
-  echo ">> \$GITLAB_RELEASE_RELEASED_AT is: ${GITLAB_RELEASE_RELEASED_AT}"
-  echo ">> \$GITLAB_RELEASE_TAG_PATH is: ${GITLAB_RELEASE_TAG_PATH}"
-  echo ">> \$GITLAB_RELEASE_ASSET_DOWNLOAD_URL is: ${GITLAB_RELEASE_ASSET_DOWNLOAD_URL}"
   echo ''
   echo ">> \$ASSET_DATE_FORMATTED is: ${ASSET_DATE_FORMATTED}"
   echo ''
