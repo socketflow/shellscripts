@@ -3,8 +3,8 @@ set -e
 
 
 # --------------------------------------------------------------
-# [VERSION] v0.9.2
-# [DATE]    20240328
+# [VERSION] v0.9.3
+# [DATE]    20240630
 # [TITLE]   this is an updater script for some network utilities
 # [title]   这是一个网络工具相关的升级脚本
 # --------------------------------------------------------------
@@ -114,10 +114,15 @@ if   [ "${1}" = "geoip.dat"     ];  then
   FILE_LOCAL_NAME='geoip.dat'
   FILE_PERMISSION='644'
 
-  # https://api.github.com/repos/soffchen/geoip/releases
-  GITHUB_USER='soffchen'
-  GITHUB_REPO='geoip'
-  GITHUB_FILENAME='geoip.dat'
+  # # https://api.github.com/repos/soffchen/geoip/releases
+  # GITHUB_USER='soffchen'
+  # GITHUB_REPO='geoip'
+  # GITHUB_FILENAME='geoip.dat'
+
+  # https://api.github.com/repos/MetaCubeX/meta-rules-dat/releases
+  GITHUB_USER='MetaCubeX'
+  GITHUB_REPO='meta-rules-dat'
+  GITHUB_FILENAME='geoip-lite.dat'
 
   # 根据GitHub文件信息生成链接
   generate_latest_release_links
@@ -143,59 +148,59 @@ elif [ "${1}" = "geosite.dat"   ];  then
   # 格式化日期
   format_github_date
 
-elif [ "${1}" = "geoip.db"      ];  then
+# elif [ "${1}" = "geoip.db"      ];  then
 
-  # 本地文件信息
-  FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/sing-box"
-  FILE_LOCAL_NAME='geoip.db'
-  FILE_PERMISSION='644'
+#   # 本地文件信息
+#   FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/sing-box"
+#   FILE_LOCAL_NAME='geoip.db'
+#   FILE_PERMISSION='644'
 
-  # https://api.github.com/repos/soffchen/sing-geoip/releases
-  GITHUB_USER='soffchen'
-  GITHUB_REPO='sing-geoip'
-  GITHUB_FILENAME='geoip.db'
+#   # https://api.github.com/repos/soffchen/sing-geoip/releases
+#   GITHUB_USER='soffchen'
+#   GITHUB_REPO='sing-geoip'
+#   GITHUB_FILENAME='geoip.db'
 
-  # 根据GitHub文件信息生成链接
-  generate_latest_release_links
+#   # 根据GitHub文件信息生成链接
+#   generate_latest_release_links
 
-  # 格式化日期
-  format_github_date
+#   # 格式化日期
+#   format_github_date
 
-elif [ "${1}" = "geosite.db"    ];  then
+# elif [ "${1}" = "geosite.db"    ];  then
 
-  # 本地文件信息
-  FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/sing-box"
-  FILE_LOCAL_NAME='geosite.db'
-  FILE_PERMISSION='644'
+#   # 本地文件信息
+#   FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/sing-box"
+#   FILE_LOCAL_NAME='geosite.db'
+#   FILE_PERMISSION='644'
 
-  # https://api.github.com/repos/MetaCubeX/meta-rules-dat/releases
-  GITHUB_USER='MetaCubeX'
-  GITHUB_REPO='meta-rules-dat'
-  GITHUB_FILENAME='geosite.db'
+#   # https://api.github.com/repos/MetaCubeX/meta-rules-dat/releases
+#   GITHUB_USER='MetaCubeX'
+#   GITHUB_REPO='meta-rules-dat'
+#   GITHUB_FILENAME='geosite.db'
 
-  # 根据GitHub文件信息生成链接
-  generate_latest_release_links
+#   # 根据GitHub文件信息生成链接
+#   generate_latest_release_links
 
-  # 格式化日期
-  format_github_date
+#   # 格式化日期
+#   format_github_date
 
-elif [ "${1}" = "geoip.mmdb"    ];  then
+# elif [ "${1}" = "geoip.mmdb"    ];  then
 
-  # 本地文件信息
-  FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/hysteria"
-  FILE_LOCAL_NAME='geoip.mmdb'
-  FILE_PERMISSION='644'
+#   # 本地文件信息
+#   FILE_LOCAL_PATH="${LOCAL_SHARE_DIR}/hysteria"
+#   FILE_LOCAL_NAME='geoip.mmdb'
+#   FILE_PERMISSION='644'
 
-  # https://api.github.com/repos/Loyalsoldier/geoip/releases
-  GITHUB_USER='Loyalsoldier'
-  GITHUB_REPO='geoip'
-  GITHUB_FILENAME='Country.mmdb'
+#   # https://api.github.com/repos/Loyalsoldier/geoip/releases
+#   GITHUB_USER='Loyalsoldier'
+#   GITHUB_REPO='geoip'
+#   GITHUB_FILENAME='Country.mmdb'
 
-  # 根据GitHub文件信息生成链接
-  generate_latest_release_links
+#   # 根据GitHub文件信息生成链接
+#   generate_latest_release_links
 
-  # 格式化日期
-  format_github_date
+#   # 格式化日期
+#   format_github_date
 
 elif [ "${1}" = "xray"          ];  then
 
@@ -293,52 +298,52 @@ elif [ "${1}" = "sing-box-beta" ];  then
   format_github_date
 
 
-elif [ "${1}" = "hysteria"      ];  then
+# elif [ "${1}" = "hysteria"      ];  then
 
-  # 本地文件信息
-  FILE_LOCAL_PATH="${LOCAL_BIN_DIR}"
-  FILE_LOCAL_NAME='hysteria'
-  FILE_PERMISSION='755'
+#   # 本地文件信息
+#   FILE_LOCAL_PATH="${LOCAL_BIN_DIR}"
+#   FILE_LOCAL_NAME='hysteria'
+#   FILE_PERMISSION='755'
 
-  # https://api.github.com/repos/apernet/hysteria/releases
-  GITHUB_USER='apernet'
-  GITHUB_REPO='hysteria'
-  GITHUB_FILENAME=''
-  GITHUB_FILENAME_LINUX='linux-amd64'
-  GITHUB_FILENAME_DARWIN='darwin-arm64'
+#   # https://api.github.com/repos/apernet/hysteria/releases
+#   GITHUB_USER='apernet'
+#   GITHUB_REPO='hysteria'
+#   GITHUB_FILENAME=''
+#   GITHUB_FILENAME_LINUX='linux-amd64'
+#   GITHUB_FILENAME_DARWIN='darwin-arm64'
 
-  # get binary link for target platform
-  select_os_filename "${GITHUB_FILENAME_LINUX}" "${GITHUB_FILENAME_DARWIN}"
+#   # get binary link for target platform
+#   select_os_filename "${GITHUB_FILENAME_LINUX}" "${GITHUB_FILENAME_DARWIN}"
 
-  # 根据GitHub文件信息生成链接
-  generate_latest_release_links
+#   # 根据GitHub文件信息生成链接
+#   generate_latest_release_links
 
-  # 格式化日期
-  format_github_date
+#   # 格式化日期
+#   format_github_date
 
 
-elif [ "${1}" = "tuic"          ];  then
+# elif [ "${1}" = "tuic"          ];  then
 
-  # 本地文件信息
-  FILE_LOCAL_PATH="${LOCAL_BIN_DIR}"
-  FILE_LOCAL_NAME='tuic'
-  FILE_PERMISSION='755'
+#   # 本地文件信息
+#   FILE_LOCAL_PATH="${LOCAL_BIN_DIR}"
+#   FILE_LOCAL_NAME='tuic'
+#   FILE_PERMISSION='755'
 
-  # https://api.github.com/repos/apernet/hysteria/releases
-  GITHUB_USER='EAimTY'
-  GITHUB_REPO='tuic'
-  GITHUB_FILENAME=''
-  GITHUB_FILENAME_LINUX='x86_64-linux-gnu'
-  GITHUB_FILENAME_DARWIN='aarch64-macos'
+#   # https://api.github.com/repos/apernet/hysteria/releases
+#   GITHUB_USER='EAimTY'
+#   GITHUB_REPO='tuic'
+#   GITHUB_FILENAME=''
+#   GITHUB_FILENAME_LINUX='x86_64-linux-gnu'
+#   GITHUB_FILENAME_DARWIN='aarch64-macos'
 
-  # get binary link for target platform
-  select_os_filename "${GITHUB_FILENAME_LINUX}" "${GITHUB_FILENAME_DARWIN}"
+#   # get binary link for target platform
+#   select_os_filename "${GITHUB_FILENAME_LINUX}" "${GITHUB_FILENAME_DARWIN}"
 
-  # 根据GitHub文件信息生成链接
-  generate_latest_release_links
+#   # 根据GitHub文件信息生成链接
+#   generate_latest_release_links
 
-  # 格式化日期
-  format_github_date
+#   # 格式化日期
+#   format_github_date
 
 elif [ "${1}" = "wgcf"          ];  then
 
@@ -362,6 +367,25 @@ elif [ "${1}" = "wgcf"          ];  then
 
   # 格式化日期
   format_github_date
+
+# elif [ "${1}" = "warp-go"       ];  then
+
+#   # 本地文件信息
+#   FILE_LOCAL_PATH="${LOCAL_BIN_DIR}"
+#   FILE_LOCAL_NAME='warp-go.tar.gz'
+#   FILE_PERMISSION='755'
+
+#   # https://gitlab.com/api/v4/projects/38543271/releases
+#   GITLAB_USER='ProjectWARP'
+#   GITLAB_REPO='warp-go'
+#   GITLAB_REPO_ID='38543271'
+#   GITLAB_FILENAME='linux_amd64.tar.gz'
+
+#   # 根据GitHub文件信息生成链接
+#   generate_gitlab_release_links
+
+#   # 格式化日期
+#   format_gitlab_date
 
 
 else
